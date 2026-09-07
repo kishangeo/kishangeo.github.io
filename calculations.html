@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculations — Kishan Tiwari</title>
+<meta name="description" content="Three interactive impact-petrology calculators: shock-melt vein cooling, peak shock pressure from the Hugoniot, and pi-group crater scaling. Charts and data export to Excel and CSV.">
+<link rel="canonical" href="https://www.ktiwari.com/calculations.html">
+<link rel="icon" href="assets/img/logo.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>(function(){try{var t=localStorage.getItem('kt-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script defer src="assets/js/main.js"></script>
+<script defer src="assets/js/calc.js"></script>
+</head>
+<body class="page-calc">
+
+<div id="stage" aria-hidden="true"></div>
+
+<div class="rail" aria-hidden="true">
+  <div class="rail-head">Depth</div>
+  <div class="rail-track" id="track">
+    <div class="rail-line"></div>
+    <div class="rail-kt"></div>
+    <div class="probe" id="probe" style="top:0"></div>
+  </div>
+  <div class="rail-foot">km</div>
+</div>
+
+<nav class="nav">
+  <a class="mark" href="index.html">
+    <img class="logo-img" src="assets/img/logo.webp" alt="KT monogram">
+    <span><b>Kishan Tiwari</b><br><i>Planetary Materials</i></span>
+  </a>
+  <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" title="Switch to dark">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+    <span class="lbl">Dark</span>
+  </button>
+  <div class="nav-scroll">
+    <a class="lnk" href="index.html">Home</a>
+    <a class="lnk" href="index.html#research">Research</a>
+    <a class="lnk" href="index.html#publications">Publications</a>
+    <a class="lnk" href="#calc-vein">Vein cooling</a>
+    <a class="lnk" href="#calc-shock">Shock pressure</a>
+    <a class="lnk" href="#calc-crater">Crater scaling</a>
+    <a class="lnk" href="index.html#contact">Contact</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="eyebrow">Tools</div>
+    <h1>Do the <em>arithmetic</em><br>yourself.</h1>
+    <p class="lede">Three calculators I use in my own work, made public. Change the numbers, watch the curve
+      move, take the data away as a spreadsheet. Everything runs in your browser — nothing is uploaded,
+      and each model names the paper it comes from.</p>
+    <div class="cta-row">
+      <a class="btn solid" href="#calc-vein">Vein cooling</a>
+      <a class="btn" href="#calc-shock">Shock pressure</a>
+      <a class="btn" href="#calc-crater">Crater scaling</a>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+<!-- ==================== 1. VEIN COOLING ==================== -->
+<section class="strata calc" id="calc-vein">
+  <div class="wrap">
+    <div class="head"><span class="depth">01 · Conduction</span><h2>Shock-melt vein cooling</h2></div>
+    <p class="sub">A vein of half-width <em>a</em>, molten at <em>T</em><sub>m</sub>, quenching into host rock at
+      <em>T</em><sub>h</sub>. Whether a high-pressure phase survives comes down to this curve: nucleation and
+      growth need time above a threshold, and a thin vein does not give it to them.</p>
+
+    <div class="calc-grid">
+      <form class="panel" onsubmit="return false">
+        <h3>Parameters</h3>
+        <div class="field"><label for="v-halfwidth">Vein half-width <em>a</em></label>
+          <div class="ip"><input type="number" id="v-halfwidth" value="100" min="0.1" step="10"><span>µm</span></div></div>
+        <div class="field"><label for="v-tmelt">Initial melt temperature <em>T</em><sub>m</sub></label>
+          <div class="ip"><input type="number" id="v-tmelt" value="2300" step="50"><span>K</span></div></div>
+        <div class="field"><label for="v-thost">Host temperature <em>T</em><sub>h</sub></label>
+          <div class="ip"><input type="number" id="v-thost" value="1000" step="50"><span>K</span></div></div>
+        <div class="field"><label for="v-k">Thermal conductivity <em>k</em></label>
+          <div class="ip"><input type="number" id="v-k" value="3.0" step="0.1"><span>W/m·K</span></div></div>
+        <div class="field"><label for="v-rho">Density <em>ρ</em></label>
+          <div class="ip"><input type="number" id="v-rho" value="3350" step="50"><span>kg/m³</span></div></div>
+        <div class="field"><label for="v-cp">Heat capacity <em>c</em><sub>p</sub></label>
+          <div class="ip"><input type="number" id="v-cp" value="1200" step="25"><span>J/kg·K</span></div></div>
+        <div class="field"><label for="v-tmax">Duration plotted</label>
+          <div class="ip"><input type="number" id="v-tmax" value="0.05" step="0.01" min="0.0001"><span>s</span></div></div>
+        <div class="field"><label for="v-thresh">Threshold temperature</label>
+          <div class="ip"><input type="number" id="v-thresh" value="1500" step="50"><span>K</span></div></div>
+        <p class="err" id="v-err" hidden></p>
+        <button class="btn solid" type="button" id="v-run">Calculate</button>
+        <div class="presets">
+          <span>Presets</span>
+          <button type="button" class="chip" data-preset="katol">Katol, 100 µm</button>
+          <button type="button" class="chip" data-preset="thinvein">Thin, 20 µm</button>
+          <button type="button" class="chip" data-preset="thickvein">Thick, 1 mm</button>
+        </div>
+      </form>
+
+      <div class="panel out">
+        <h3>Result</h3>
+        <dl class="stats" id="v-out"></dl>
+        <div class="chart-box"><canvas id="v-chart"></canvas></div>
+        <div class="exports">
+          <button class="btn sm" type="button" data-export="xlsx:vein">Excel .xlsx</button>
+          <button class="btn sm" type="button" data-export="csv:vein">CSV</button>
+          <button class="btn sm" type="button" data-export="png:vein:v-chart">Chart .png</button>
+        </div>
+        <div class="tbl-wrap"><table id="v-table"></table></div>
+        <p class="tbl-note" id="v-table-note"></p>
+        <p class="ref">Exact solution for a slab initial condition in an infinite medium:
+          <span class="eq">T(x,t) = T<sub>h</sub> + ½(T<sub>m</sub>−T<sub>h</sub>)[erf((a−x)/2√(αt)) + erf((a+x)/2√(αt))]</span>,
+          α = k/ρc<sub>p</sub>. Carslaw &amp; Jaeger (1959), <em>Conduction of Heat in Solids</em>, §2.3.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 2. SHOCK PRESSURE ==================== -->
+<section class="strata calc" id="calc-shock">
+  <div class="wrap">
+    <div class="head"><span class="depth">02 · Hugoniot</span><h2>Peak shock pressure</h2></div>
+    <p class="sub">Planar impact approximation with a linear shock–particle Hugoniot,
+      <em>U</em><sub>s</sub> = <em>C</em><sub>0</sub> + <em>S·u</em><sub>p</sub>, solved by impedance match so the
+      impactor and target need not be the same material. The pressure is then mapped onto the Stöffler shock stages.</p>
+
+    <div class="calc-grid">
+      <form class="panel" onsubmit="return false">
+        <h3>Parameters</h3>
+        <div class="field"><label for="p-vel">Impact velocity</label>
+          <div class="ip"><input type="number" id="p-vel" value="5" step="0.5" min="0.1"><span>km/s</span></div></div>
+
+        <h4>Impactor</h4>
+        <div class="field"><label for="p-imp-mat">Material</label><select id="p-imp-mat"></select></div>
+        <div class="row3">
+          <div class="field"><label for="p-imp-rho">ρ₀ (kg/m³)</label><input type="number" id="p-imp-rho" step="10"></div>
+          <div class="field"><label for="p-imp-c0">C₀ (km/s)</label><input type="number" id="p-imp-c0" step="0.05"></div>
+          <div class="field"><label for="p-imp-s">S</label><input type="number" id="p-imp-s" step="0.05"></div>
+        </div>
+
+        <h4>Target</h4>
+        <div class="field"><label for="p-tgt-mat">Material</label><select id="p-tgt-mat"></select></div>
+        <div class="row3">
+          <div class="field"><label for="p-tgt-rho">ρ₀ (kg/m³)</label><input type="number" id="p-tgt-rho" step="10"></div>
+          <div class="field"><label for="p-tgt-c0">C₀ (km/s)</label><input type="number" id="p-tgt-c0" step="0.05"></div>
+          <div class="field"><label for="p-tgt-s">S</label><input type="number" id="p-tgt-s" step="0.05"></div>
+        </div>
+        <p class="err" id="p-err" hidden></p>
+        <button class="btn solid" type="button" id="p-run">Calculate</button>
+      </form>
+
+      <div class="panel out">
+        <h3>Result</h3>
+        <dl class="stats" id="p-out"></dl>
+        <div class="chart-box"><canvas id="p-chart"></canvas></div>
+        <div class="exports">
+          <button class="btn sm" type="button" data-export="xlsx:shock">Excel .xlsx</button>
+          <button class="btn sm" type="button" data-export="csv:shock">CSV</button>
+          <button class="btn sm" type="button" data-export="png:shock:p-chart">Chart .png</button>
+        </div>
+        <div class="tbl-wrap"><table id="p-table"></table></div>
+        <p class="tbl-note" id="p-table-note"></p>
+        <p class="ref">Melosh (1989), <em>Impact Cratering: A Geologic Process</em>, ch. 4. Shock-stage boundaries
+          for ordinary chondrites after Stöffler, Keil &amp; Scott (1991) and Stöffler, Hamann &amp; Metzler (2018).
+          Hugoniot constants are room-temperature literature values; they shift with porosity and pre-heating.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 3. CRATER SCALING ==================== -->
+<section class="strata calc" id="calc-crater">
+  <div class="wrap">
+    <div class="head"><span class="depth">03 · π-scaling</span><h2>Crater scaling</h2></div>
+    <p class="sub">How big a hole a given impactor makes, in the gravity regime, in competent rock. The Lonar preset
+      reproduces the real crater's 1.88 km in Deccan basalt for a plausible impactor — which is the most you
+      should ask of a scaling law.</p>
+
+    <div class="calc-grid">
+      <form class="panel" onsubmit="return false">
+        <h3>Parameters</h3>
+        <div class="field"><label for="c-diam">Impactor diameter <em>L</em></label>
+          <div class="ip"><input type="number" id="c-diam" value="80" step="5" min="0.1"><span>m</span></div></div>
+        <div class="field"><label for="c-vel">Impact velocity</label>
+          <div class="ip"><input type="number" id="c-vel" value="18" step="0.5" min="0.1"><span>km/s</span></div></div>
+        <div class="field"><label for="c-angle">Impact angle from horizontal</label>
+          <div class="ip"><input type="number" id="c-angle" value="45" step="5" min="1" max="90"><span>°</span></div></div>
+        <div class="field"><label for="c-rho-i">Impactor density</label>
+          <div class="ip"><input type="number" id="c-rho-i" value="3350" step="50"><span>kg/m³</span></div></div>
+        <div class="field"><label for="c-rho-t">Target density</label>
+          <div class="ip"><input type="number" id="c-rho-t" value="2860" step="50"><span>kg/m³</span></div></div>
+        <div class="field"><label for="c-g">Surface gravity</label>
+          <div class="ip"><input type="number" id="c-g" value="9.81" step="0.01" min="0.001"><span>m/s²</span></div></div>
+        <p class="err" id="c-err" hidden></p>
+        <button class="btn solid" type="button" id="c-run">Calculate</button>
+        <div class="presets">
+          <span>Presets</span>
+          <button type="button" class="chip" data-cpreset="lonar">Lonar</button>
+          <button type="button" class="chip" data-cpreset="meteor">Barringer</button>
+          <button type="button" class="chip" data-cpreset="chicx">Chicxulub</button>
+        </div>
+      </form>
+
+      <div class="panel out">
+        <h3>Result</h3>
+        <dl class="stats" id="c-out"></dl>
+        <div class="chart-box"><canvas id="c-chart"></canvas></div>
+        <div class="exports">
+          <button class="btn sm" type="button" data-export="xlsx:crater">Excel .xlsx</button>
+          <button class="btn sm" type="button" data-export="csv:crater">CSV</button>
+          <button class="btn sm" type="button" data-export="png:crater:c-chart">Chart .png</button>
+        </div>
+        <div class="tbl-wrap"><table id="c-table"></table></div>
+        <p class="tbl-note" id="c-table-note"></p>
+        <p class="ref"><span class="eq">D<sub>tc</sub> = 1.161 (ρ<sub>i</sub>/ρ<sub>t</sub>)<sup>1/3</sup> L<sup>0.78</sup> v<sup>0.44</sup> g<sup>−0.22</sup> (sin θ)<sup>1/3</sup></span>
+          Simple craters finalise near 1.25 D<sub>tc</sub>; above the ~3.2 km simple-to-complex transition on Earth
+          they collapse wider. Schmidt &amp; Housen (1987); Melosh (1989) §7.8.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="strata" id="calc-notes">
+  <div class="wrap">
+    <div class="head"><span class="depth">Caveats</span><h2>What these will and won't tell you</h2></div>
+    <p class="sub">Every one of these is a first-order estimate. Treat them as a way to check whether a number is
+      plausible, not as a substitute for a model.</p>
+    <div class="notes">
+      <div><h4>Vein cooling</h4><p>Assumes constant thermal properties, no latent heat of crystallisation, and a
+        host that is infinite and initially uniform. Latent heat holds the vein hotter for longer than this curve
+        shows, so quench times here are lower bounds.</p></div>
+      <div><h4>Shock pressure</h4><p>The planar impact approximation holds only near the impact point, in the first
+        moments. It ignores porosity, which raises shock heating sharply, and pre-shock temperature. Real peak
+        pressures decay steeply away from the contact.</p></div>
+      <div><h4>Crater scaling</h4><p>Gravity-regime scaling for competent rock. It is wrong in the strength regime
+        (small craters, strong targets), wrong for very oblique impacts below about 15°, and does not model
+        atmospheric break-up of the impactor.</p></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span>© 2026 Kishan Tiwari · ktiwari.com</span>
+    <span>Calculations run locally in your browser</span>
+    <span><a href="index.html">← Back to the site</a></span>
+  </div>
+</footer>
+
+</body>
+</html>

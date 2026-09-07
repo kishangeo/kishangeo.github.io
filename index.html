@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kishan Tiwari — Shock Metamorphism &amp; Planetary Materials</title>
+<meta name="description" content="Dr. Kishan Tiwari, planetary materials scientist at IIT Kharagpur. Shock metamorphism, high-pressure mineralogy and meteorite petrology in ordinary chondrites — Katol, Kamargaon, Bori and the Lonar crater.">
+<meta name="author" content="Kishan Tiwari">
+<link rel="canonical" href="https://www.ktiwari.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kishan Tiwari — Shock Metamorphism &amp; Planetary Materials">
+<meta property="og:description" content="Reading the microsecond record of asteroid impacts written into meteorites.">
+<meta property="og:image" content="https://www.ktiwari.com/assets/img/logo.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/logo.webp" type="image/webp">
+<link rel="apple-touch-icon" href="assets/img/logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/css/style.css">
+<script>/* set the theme before first paint so there is no flash */
+(function(){try{var t=localStorage.getItem('kt-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="assets/js/main.js"></script>
+</head>
+<body>
+<div id="stage" aria-hidden="true"></div>
+
+<!-- ============ DEPTH RAIL ============ -->
+<div class="rail" aria-hidden="true">
+  <div class="rail-head">Depth</div>
+  <div class="rail-track" id="track">
+    <div class="rail-line"></div>
+    <div class="rail-kt"></div>
+    <div class="probe" id="probe" style="top:0"></div>
+  </div>
+  <div class="rail-foot">km</div>
+</div>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <a class="mark" href="#top">
+    <img class="logo-img" src="assets/img/logo.webp" alt="KT monogram">
+    <span><b>Kishan Tiwari</b><br><i>Planetary Materials</i></span>
+  </a>
+  <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" title="Switch to dark">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
+    <span class="lbl">Dark</span>
+  </button>
+  <div class="nav-scroll">
+    <a class="lnk" href="#about">About</a>
+    <a class="lnk" href="#research">Research</a>
+    <a class="lnk" href="#publications">Publications</a>
+    <a class="lnk" href="#people">People</a>
+    <a class="lnk" href="#record">Record</a>
+    <a class="lnk" href="#road">On the road</a>
+    <a class="lnk" href="#press">Press</a>
+    <a class="lnk" href="#field">Field</a>
+    <a class="lnk" href="calculations.html">Calculations</a>
+    <a class="lnk" href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="hero-in">
+    <div class="eyebrow">0 km &nbsp;·&nbsp; Surface</div>
+    <h1>Rocks that<br>remember the<br><em>collision</em>.</h1>
+    <p class="lede">I am <b>Dr. Kishan Tiwari</b> — a planetary materials scientist reading the microsecond record of asteroid impacts written into meteorites. Shock-melt veins inside ordinary chondrites reach pressures and temperatures found <b>400–700 km below Earth's surface</b>. I take those veins apart, mineral by mineral.</p>
+
+    <dl class="hero-meta">
+      <div><dt>Position</dt><dd>Institute Postdoctoral Fellow</dd></div>
+      <div><dt>Lab</dt><dd>Experimental Petrology, IIT Kharagpur</dd></div>
+      <div><dt>Origin</dt><dd>Mughalsarai, Uttar Pradesh</dd></div>
+    </dl>
+
+    <div class="cta-row">
+      <a class="btn solid" href="#publications">Read the work</a>
+      <a class="btn" href="https://scholar.google.co.in/citations?user=qSaVEWcAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar ↗</a>
+      <a class="btn" href="mailto:kishantiwari.geo@gmail.com">Get in touch</a>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+
+<!-- ============ ABOUT ============ -->
+<section class="strata" id="about" data-depth="35">
+  <div class="wrap">
+    <div class="head"><span class="depth">35 km · Moho</span><h2>The person under the microscope</h2></div>
+    <p class="sub">A researcher, a geologist, a poet, a photographer — a serious person who admires the comedy of life.</p>
+
+    <div class="about rv">
+      <div class="prose">
+        <p>I grew up in <strong>Mughalsarai, Uttar Pradesh</strong>, and finished school there. Delhi came next — a B.Sc. (Hons) in Geology at Hansraj College, then an M.Sc. at the University of Delhi. The Ph.D. followed at <strong>IIT Kharagpur</strong>, in Earth and Planetary Science, where I am now an Institute Postdoctoral Fellow in the Experimental Petrology Lab.</p>
+        <p>My work is <strong>question-driven, not technique-driven</strong>. The instruments — FIB-TEM, FEG-SEM, FE-EPMA, Raman — are how I get an answer, never the reason I ask. What I actually want to know is what happens to a mineral in the few hundred milliseconds when an asteroid hits another asteroid, and what that tells us about the deep Earth we cannot reach.</p>
+        <div class="pull">"Meteorites are leftovers from the formation of the solar system." They kept the original chemistry that Earth spent four and a half billion years destroying.</div>
+        <p>Longer term, I want to build an independent shock-metamorphism and high-pressure planetary mineralogy group in India — one wired directly into ISRO's planetary mission roadmap. Indian falls like Katol, Kamargaon and Bori are world-class samples. They should be studied here.</p>
+      </div>
+
+      <div>
+        <figure class="portrait-fig">
+          <img class="portrait" src="assets/img/portrait.webp" alt="Portrait of Dr. Kishan Tiwari">
+          <figcaption>Kishan Tiwari · IIT Kharagpur</figcaption>
+        </figure>
+        <div class="logo-note">
+          <img class="logo-img big" src="assets/img/logo.webp" alt="KT monogram">
+          <div>
+            <h4>Why the gold bar</h4>
+            <p>The monogram is KT twice over: my initials, and the K–Pg boundary. The golden bar is that iridium-rich clay layer — 66 million years of ordinary rock, interrupted by one afternoon. The asteroid at the top is the cause, and the reason I have a job.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESEARCH ============ -->
+<section class="strata" id="research" data-depth="410">
+  <div class="wrap">
+    <div class="head"><span class="depth">410 km · Olivine → Wadsleyite</span><h2>What a shock-melt vein is</h2></div>
+    <p class="sub">Two asteroids meet. A shock wave crosses the rock in microseconds. Along fractures, friction spikes the temperature and the rock melts in place — a thin dark vein, quenched before it can forget.</p>
+
+    <div class="figpair rv">
+      <figure>
+        <div class="plate"><img src="assets/img/fig_shock.webp" alt="Schematic of shock wave propagation during an impact between two bodies"></div>
+        <figcaption><b>Fig. 1</b> — Rarefaction waves decompress the body after shock loading; slippage along fractures generates frictional heat and causes melting. From my own work.</figcaption>
+      </figure>
+      <figure>
+        <svg class="diagram" viewBox="0 0 460 300" role="img" aria-label="Two-dimensional model of shock wave propagation from an impact point and formation of shock-melt veins">
+          <defs>
+            <radialGradient id="blast" cx="22%" cy="16%" r="72%">
+              <stop offset="0" stop-color="#E2603A" stop-opacity=".55"/>
+              <stop offset="45%" stop-color="#D4A72C" stop-opacity=".14"/>
+              <stop offset="100%" stop-color="#D4A72C" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="460" height="300" fill="#10131A"/>
+          <rect x="0" y="58" width="460" height="242" fill="#161A22"/>
+          <rect width="460" height="300" fill="url(#blast)"/>
+          <path d="M112 6 L104 46" stroke="#E2603A" stroke-width="1.2" stroke-dasharray="4 3"/>
+          <circle cx="102" cy="50" r="6.5" fill="#E2603A"/>
+          <path d="M0 58 H62 Q102 108 142 58 H460" fill="none" stroke="#4A5163" stroke-width="1.4"/>
+          <g fill="none" stroke="#D4A72C" stroke-width="1">
+            <path d="M40 58 A62 62 0 0 0 164 58" opacity=".65"/>
+            <path d="M8 58 A96 96 0 0 0 200 58" opacity=".45"/>
+            <path d="M-30 58 A134 134 0 0 0 238 58" opacity=".28"/>
+            <path d="M-70 58 A176 176 0 0 0 278 58" opacity=".16"/>
+          </g>
+          <g stroke="#3B6FE0" stroke-width="2.4" fill="none" stroke-linecap="round">
+            <path d="M96 112 C132 140 128 178 168 198"/>
+            <path d="M104 118 C78 152 92 190 66 220"/>
+            <path d="M150 186 C186 192 204 216 246 214"/>
+            <path d="M84 200 C96 226 84 246 104 268"/>
+          </g>
+          <g stroke="#8FB3F2" stroke-width=".9" fill="none" opacity=".7">
+            <path d="M128 154 L152 148"/><path d="M96 168 L74 176"/>
+            <path d="M180 202 L196 186"/><path d="M92 232 L72 240"/>
+          </g>
+          <g fill="#1E232D" stroke="#2A3141" stroke-width=".8">
+            <ellipse cx="270" cy="126" rx="26" ry="17"/><ellipse cx="330" cy="182" rx="20" ry="14"/>
+            <ellipse cx="238" cy="250" rx="24" ry="15"/><ellipse cx="386" cy="112" rx="17" ry="12"/>
+            <ellipse cx="404" cy="234" rx="22" ry="14"/><ellipse cx="312" cy="272" rx="18" ry="11"/>
+          </g>
+          <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="#9A9488" letter-spacing=".08em">
+            <text x="118" y="34">IMPACTOR</text>
+            <text x="212" y="88" fill="#D4A72C">SHOCK FRONT</text>
+            <text x="176" y="240" fill="#3B6FE0">SHOCK-MELT VEIN</text>
+            <text x="330" y="126">HOST CHONDRITE</text>
+          </g>
+        </svg>
+        <figcaption><b>Fig. 2</b> — Where the veins end up: fracture networks behind the shock front, quenched into the host chondrite. Not to scale.</figcaption>
+      </figure>
+    </div>
+
+    <div class="research rv">
+      <div class="prose">
+        <p>Inside those veins, olivine, pyroxene and feldspar are pushed past the point where their ordinary crystal structures can survive. They collapse into <strong>high-pressure polymorphs</strong> — denser packings of the same atoms, the same minerals that make up Earth's transition zone and lower mantle.</p>
+        <p>That is the trick. A meteorite you can hold in one hand contains, in a vein a hundred microns wide, the mineralogy of a region <strong>660 km beneath your feet</strong> that no drill will ever reach.</p>
+      </div>
+      <div class="prose">
+        <p>Identify the phases, measure their compositions, model how fast they grew, and you can back out the pressure, the temperature and the duration of an impact that happened before there were oceans.</p>
+        <p>My samples are mostly Indian falls — <strong>Katol</strong> (L6), <strong>Kamargaon</strong> (L6) and <strong>Bori</strong> (L6) — plus impact-melt bombs from the <strong>Lonar crater</strong> in Maharashtra, the only well-preserved terrestrial crater in basalt.</p>
+      </div>
+    </div>
+
+    <div class="phases rv">
+      <h3>The transformation sequence I look for</h3>
+      <div class="phase-grid">
+        <div class="phase">
+          <div class="sw"></div>
+          <b>Olivine</b>
+          <div class="form">(Mg,Fe)₂SiO₄ · &lt; 410 km</div>
+          <p>The starting material. Ordinary chondrite bulk mineralogy, unshocked and orthorhombic.</p>
+        </div>
+        <div class="phase">
+          <div class="sw"></div>
+          <b>Wadsleyite</b>
+          <div class="form">β-phase · ~410–520 km</div>
+          <p>First collapse. Same formula, denser packing. Marks the top of the transition zone.</p>
+        </div>
+        <div class="phase">
+          <div class="sw"></div>
+          <b>Ringwoodite</b>
+          <div class="form">γ-spinel · ~520–660 km</div>
+          <p>Deep blue, spinel-structured. In Katol it grew from a superheated chondritic melt — my 2025 paper.</p>
+        </div>
+        <div class="phase">
+          <div class="sw"></div>
+          <b>Bridgmanite</b>
+          <div class="form">(Mg,Fe,Al)SiO₃ · &gt; 660 km</div>
+          <p>Earth's most abundant mineral. We found natural Fe-bearing aluminous bridgmanite in Katol — PNAS, 2021.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PUBLICATIONS ============ -->
+<section class="strata" id="publications" data-depth="660">
+  <div class="wrap">
+    <div class="head"><span class="depth">660 km · Ringwoodite → Bridgmanite</span><h2>Publications</h2></div>
+    <p class="sub">Five peer-reviewed papers. Open each for the DOI.</p>
+
+    <div class="pubs rv">
+      <a class="pub" href="https://doi.org/10.1016/j.jseaes.2026.106997" target="_blank" rel="noopener">
+        <div class="yr">2026</div>
+        <div>
+          <h3>Evidence for shock-induced transformation and incipient melting of pyroxene in impact-melt bomb from Lonar Impact Crater, India</h3>
+          <div class="auth"><u>Tiwari, K.</u>, Ray, D., Misra, S., &amp; Arora, G.</div>
+          <div class="jrn"><em>Journal of Asian Earth Sciences</em> · 301, 106997</div>
+        </div>
+        <div class="go">DOI ↗</div>
+      </a>
+
+      <a class="pub" href="https://doi.org/10.1186/s40645-025-00721-7" target="_blank" rel="noopener">
+        <div class="yr">2025</div>
+        <div>
+          <h3>Olivine–ringwoodite transformation in Katol meteorite: implications for localized superheating of chondritic melt and seismic attenuation</h3>
+          <div class="auth"><u>Tiwari, K.</u>, Ghosh, S., Miyahara, M., &amp; Ray, D.</div>
+          <div class="jrn"><em>Progress in Earth and Planetary Science</em> · 12, 81</div>
+        </div>
+        <div class="go">DOI ↗</div>
+      </a>
+
+      <a class="pub" href="https://doi.org/10.1029/2022JE007420" target="_blank" rel="noopener">
+        <div class="yr">2022</div>
+        <div>
+          <h3>Vesicular olivines and pyroxenes in shocked Kamargaon L6 chondrite: implications for primary volatiles and its multiple impact history</h3>
+          <div class="auth"><u>Tiwari, K.</u>, Ghosh, S., Miyahara, M., &amp; Ray, D.</div>
+          <div class="jrn"><em>Journal of Geophysical Research: Planets</em> · 127, e2022JE007420</div>
+        </div>
+        <div class="go">DOI ↗</div>
+      </a>
+
+      <a class="pub" href="https://doi.org/10.1073/pnas.2108736118" target="_blank" rel="noopener">
+        <div class="yr">2021</div>
+        <div>
+          <h3>Natural Fe-bearing aluminous bridgmanite in the Katol L6 chondrite<span class="flag">PNAS</span></h3>
+          <div class="auth">Ghosh, S., <u>Tiwari, K.</u>, Miyahara, M., Rohrbach, A., Vollmer, C., Stagno, V., Ohtani, E., &amp; Ray, D.</div>
+          <div class="jrn"><em>Proceedings of the National Academy of Sciences</em> · 118(40)</div>
+        </div>
+        <div class="go">DOI ↗</div>
+      </a>
+
+      <a class="pub" href="https://doi.org/10.1029/2021GL093592" target="_blank" rel="noopener">
+        <div class="yr">2021</div>
+        <div>
+          <h3>Shock-induced incongruent melting of olivine in Kamargaon L6 chondrite</h3>
+          <div class="auth"><u>Tiwari, K.</u>, Ghosh, S., Miyahara, M., &amp; Ray, D.</div>
+          <div class="jrn"><em>Geophysical Research Letters</em> · e2021GL093592</div>
+        </div>
+        <div class="go">DOI ↗</div>
+      </a>
+    </div>
+
+    <div class="confs rv">
+      <h3>Selected conference abstracts</h3>
+      <ul>
+        <li><b>Tiwari, K.</b>, Ghosh, S., Miyahara, M., &amp; Ray, D. (2019). High-pressure polymorphs in Katol L6 chondrite: deciphering thermal history and shock conditions. <em>Geophysical Research Abstracts</em>, 18592.</li>
+        <li>Ghosh, S., <b>Tiwari, K.</b>, Miyahara, M., Rohrbach, A., Vollmer, C., Ohtani, E., &amp; Ray, D. (2019). Natural occurrence of aluminous bridgmanite and its formation in a Katol meteorite. <em>AGU Fall Meeting</em>, DI31B-0015.</li>
+        <li>Ghosh, S., Miyahara, M., <b>Tiwari, K.</b>, Ray, D., &amp; Ohtani, E. (2018). Formation of Al-bearing bridgmanite in a Katol meteorite. <em>AGU Fall Meeting</em>, P53G-3068.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLLABORATORS ============ -->
+<section class="strata" id="people" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">700 km · Lower Mantle</span><h2>Collaborators</h2></div>
+    <p class="sub">Four countries, one vein. Nobody images a hundred-micron melt vein alone.</p>
+
+    <div class="collab rv">
+      <div class="person"><div class="flagx">IN</div><b>Dr. Sujoy Ghosh</b><div class="role">Assistant Professor, Department of Geology &amp; Geophysics</div><div class="inst">IIT Kharagpur</div></div>
+      <div class="person"><div class="flagx">IN</div><b>Dr. Dwijesh Ray</b><div class="role">Associate Professor, Planetary Science Division</div><div class="inst">PRL Ahmedabad</div></div>
+      <div class="person"><div class="flagx">JP</div><b>Prof. Masaaki Miyahara</b><div class="role">Associate Professor, Graduate School of Advanced Science and Engineering</div><div class="inst">Hiroshima University</div></div>
+      <div class="person"><div class="flagx">JP</div><b>Prof. Eiji Ohtani</b><div class="role">Professor Emeritus, Earth and Planetary Materials Science</div><div class="inst">Tohoku University</div></div>
+      <div class="person"><div class="flagx">IN</div><b>Garima Arora</b><div class="role">Scientific Officer–C, Planetary Science Division</div><div class="inst">PRL Ahmedabad</div></div>
+      <div class="person"><div class="flagx">DE</div><b>Dr. Arno Rohrbach</b><div class="role">Senior Researcher, Institut für Mineralogie</div><div class="inst">Universität Münster</div></div>
+      <div class="person"><div class="flagx">DE</div><b>Dr. Christian Vollmer</b><div class="role">Researcher, Institut für Mineralogie</div><div class="inst">Universität Münster</div></div>
+      <div class="person"><div class="flagx">IT</div><b>Prof. Vincenzo Stagno</b><div class="role">Associate Professor, Department of Earth Sciences</div><div class="inst">Sapienza University of Rome</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECORD ============ -->
+<section class="strata" id="record" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">Core log</span><h2>Education &amp; awards</h2></div>
+    <p class="sub">Read bottom-up, the way you would read a stratigraphic section.</p>
+
+    <div class="tl rv">
+      <div>
+        <h3>Education</h3>
+        <ol>
+          <li><div class="when">2023</div><div class="what">Ph.D., Earth &amp; Planetary Science</div><div class="where">Department of Geology and Geophysics, IIT Kharagpur — advisor Prof. Sujoy Ghosh</div></li>
+          <li><div class="when">2012 – 2014</div><div class="what">M.Sc. Geology</div><div class="where">Jubilee Hall, University of Delhi</div></li>
+          <li><div class="when">2009 – 2012</div><div class="what">B.Sc. (Hons.) Geology</div><div class="where">Hansraj College, University of Delhi</div></li>
+          <li><div class="when">2007 – 2009</div><div class="what">High School &amp; Intermediate, CBSE</div><div class="where">Kendriya Vidyalaya, Mughalsarai</div></li>
+        </ol>
+      </div>
+      <div>
+        <h3>Fellowships, grants &amp; qualifications</h3>
+        <ul class="awards">
+          <li><b>2023</b><span><em>PRL Ahmedabad Postdoctoral Fellowship</em></span></li>
+          <li><b>2021</b><span><em>AGU Student Travel Grant</em> — USD 1,000</span></li>
+          <li><b>2021</b><span><em>International Travel Grant</em>, IIT Kharagpur</span></li>
+          <li><b>2021–22</b><span><em>Teaching Assistantship</em>, Geology &amp; Geophysics, IIT Kharagpur</span></li>
+          <li><b>2018–21</b><span><em>UGC Senior Research Fellow</em>, IIT Kharagpur</span></li>
+          <li><b>2016–18</b><span><em>UGC Junior Research Fellow</em>, IIT Kharagpur</span></li>
+          <li><b>2016</b><span><em>CSIR–JRF</em> — All India Rank 35</span></li>
+          <li><b>2015</b><span><em>UGC–JRF</em> — All India Rank 33</span></li>
+          <li><b>2014–17</b><span><em>GATE qualified</em> four times — best score 585 (2017)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ON THE ROAD ============ -->
+<section class="strata" id="road" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">Back at the surface</span><h2>Conferences, posters, engines</h2></div>
+    <p class="sub">AGU Fall Meeting in New Orleans, seminars at home, and the one afternoon at NASA Stennis where the hardware is bigger than the science.</p>
+
+    <div class="road rv">
+      <figure class="shot a"><img src="assets/img/poster.webp" alt="Conference poster 2135"><figcaption>Poster 2135 — shock-induced incongruent melting of olivine, Kamargaon L6</figcaption></figure>
+      <figure class="shot b"><img src="assets/img/eposter.webp" alt="Explaining results at an AGU e-poster kiosk"><figcaption>Walking someone through the veins, AGU e-poster hall</figcaption></figure>
+      <figure class="shot c top"><img src="assets/img/agu_talk.webp" alt="Presenting from the podium at the AGU Fall Meeting"><figcaption>AGU Fall Meeting podium</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/poster_stand.webp" alt="Standing beside the printed poster"><figcaption>The poster, printed</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/award.webp" alt="Receiving an award on stage"><figcaption>Award, on stage</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/seminar.webp" alt="Giving a seminar with slides projected"><figcaption>Seminar, back home</figcaption></figure>
+      <figure class="shot c top"><img src="assets/img/stennis.webp" alt="At the NASA Stennis Space Center sign"><figcaption>NASA Stennis Space Center</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/engine.webp" alt="Rocket stage on display at NASA Stennis"><figcaption>Rocket stage, up close</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/group.webp" alt="Group photograph of meeting attendees"><figcaption>The whole room</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/hall.webp" alt="Convention centre exhibition hall"><figcaption>Convention centre, morning</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/nola.webp" alt="NOLA letters sculpture in New Orleans"><figcaption>NOLA</figcaption></figure>
+      <figure class="shot c"><img src="assets/img/quarter.webp" alt="Balconies in the French Quarter, New Orleans"><figcaption>French Quarter</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRESS ============ -->
+<section class="strata" id="press" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">Surface again</span><h2>In the press</h2></div>
+    <p class="sub">When a mineral from 660 km turns up in a rock that fell on Maharashtra, the newspapers notice.</p>
+
+    <div class="media rv">
+      <a class="clip" href="https://indianexpress.com/article/explained/how-an-indian-meteorite-helped-study-earths-formation-7563160/" target="_blank" rel="noopener">
+        <div class="outlet">The Indian Express</div>
+        <div class="hl">How an Indian meteorite helped study Earth's formation</div>
+        <div class="src">On Ghosh et al., PNAS 2021 ↗</div>
+      </a>
+      <a class="clip" href="https://www.thehindu.com/sci-tech/science/scientists-find-a-mineral-seen-in-the-depths-of-the-earth-in-a-meteorite/article37256589.ece" target="_blank" rel="noopener">
+        <div class="outlet">The Hindu</div>
+        <div class="hl">Scientists find a mineral seen in the depths of the Earth in a meteorite</div>
+        <div class="src">On Ghosh et al., PNAS 2021 ↗</div>
+      </a>
+      <a class="clip" href="https://www.thehindu.com/sci-tech/science/study-on-meteorite-provides-clues-to-earths-mantle/article34993511.ece" target="_blank" rel="noopener">
+        <div class="outlet">The Hindu</div>
+        <div class="hl">Study on meteorite provides clues to Earth's mantle</div>
+        <div class="src">On Tiwari et al., GRL 2021 ↗</div>
+      </a>
+      <a class="clip" href="https://www.indiatoday.in/science/story/earth-formation-assam-meteorite-iit-kharagpur-1818414-2021-06-23" target="_blank" rel="noopener">
+        <div class="outlet">India Today</div>
+        <div class="hl">Assam meteorite offers clues to how the Earth formed</div>
+        <div class="src">On Tiwari et al., GRL 2021 ↗</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIELD / PHOTOGRAPHY ============ -->
+<section class="strata" id="field" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">Off the microscope</span><h2>Birds, macro, and other small things</h2></div>
+    <p class="sub">The same habit as petrography — get very close to something small and wait for it to hold still. Species names below are my reading of the frames; correct me and I'll relabel them.</p>
+
+    <div class="galhead rv">
+      <figure class="shot wide2">
+        <img src="assets/img/p_camera.webp" alt="Kishan Tiwari with a camera">
+        <figcaption>Working the other kind of lens</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/img/p_field.webp" alt="Kishan Tiwari in the field with a tripod">
+        <figcaption>Out with the tripod</figcaption>
+      </figure>
+    </div>
+
+    <h3 class="galtitle rv">Birds</h3>
+    <div class="shots grid4 rv">
+      <figure class="shot"><img src="assets/img/bird_05.webp" alt="White-throated kingfisher"><figcaption>White-throated kingfisher</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_09.webp" alt="Green bee-eater"><figcaption>Green bee-eater</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_11.webp" alt="Indian roller"><figcaption>Indian roller</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_10.webp" alt="Jungle babbler"><figcaption>Jungle babbler</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_04.webp" alt="Indian pond heron on a branch"><figcaption>Indian pond heron</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_06.webp" alt="Pond heron in low light"><figcaption>Pond heron, low light</figcaption></figure>
+      <figure class="shot"><img src="assets/img/bird_07.webp" alt="Dark plumaged bird on an overcast morning"><figcaption>Overcast morning</figcaption></figure>
+    </div>
+
+    <h3 class="galtitle rv">Macro</h3>
+    <div class="shots grid4 rv">
+      <figure class="shot"><img src="assets/img/macro_08.webp" alt="Dragonfly head-on"><figcaption>Dragonfly, head-on</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_06.webp" alt="Dragonfly on a dry stalk"><figcaption>Dragonfly on a dry stalk</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_11.webp" alt="Honeybee on a yellow flower"><figcaption>Honeybee, yellow composite</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_15.webp" alt="Pale butterfly on red flowers"><figcaption>Butterfly on red</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_13.webp" alt="White butterfly on a small flower"><figcaption>White wings, small flower</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_14.webp" alt="Red cotton bug on a leaf"><figcaption>Red cotton bug</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_07.webp" alt="Grasshopper on a grass blade"><figcaption>Grasshopper, grass blade</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_09.webp" alt="Garden lizard among green leaves"><figcaption>Garden lizard</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_17.webp" alt="Leaf miner trails on a leaf"><figcaption>Leaf-miner trails</figcaption></figure>
+      <figure class="shot"><img src="assets/img/macro_03.webp" alt="Reflection inside a water droplet"><figcaption>The world in a droplet</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="strata" id="contact" data-depth="700">
+  <div class="wrap">
+    <div class="head"><span class="depth">Contact</span><h2>Write to me</h2></div>
+    <p class="sub">Samples, collaborations, student enquiries, or an argument about shock stage assignment — all welcome.</p>
+
+    <div class="contact rv">
+      <div>
+        <ul class="fields">
+          <li><span class="k">Email</span><a href="mailto:kishantiwari.geo@gmail.com">kishantiwari.geo@gmail.com</a></li>
+          <li><span class="k">Phone</span><a href="tel:+917479024014">+91 74790 24014</a></li>
+          <li><span class="k">Post</span><span>Experimental Petrology Lab, Department of Geology &amp; Geophysics, IIT Kharagpur, West Midnapore — 721302, India</span></li>
+          <li><span class="k">Scholar</span><a href="https://scholar.google.co.in/citations?user=qSaVEWcAAAAJ&hl=en" target="_blank" rel="noopener">scholar.google.co.in</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="socials">
+          <a href="https://www.researchgate.net/profile/Kishan-Tiwari-4" target="_blank" rel="noopener">ResearchGate</a>
+          <a href="https://www.linkedin.com/in/kishan-tiwari-50ba58221/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://twitter.com/kishan_geo" target="_blank" rel="noopener">Twitter / X</a>
+          <a href="https://500px.com/p/kishantiwari1208" target="_blank" rel="noopener">500px</a>
+          <a href="https://www.instagram.com/kishan.tiwari.568/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.quora.com/profile/Kishan-Tiwari-6" target="_blank" rel="noopener">Quora</a>
+          <a href="https://www.facebook.com/kishan.tiwari.568/" target="_blank" rel="noopener">Facebook</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span>© 2026 Kishan Tiwari · ktiwari.com</span>
+    <span>Katol · Kamargaon · Bori · Lonar</span>
+    <span><a href="#top" style="color:var(--gold);text-decoration:none">Back to the surface ↑</a></span>
+  </div>
+</footer>
+</body>
+</html>
