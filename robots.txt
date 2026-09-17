@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /v1/
 
-Sitemap: https://www.ktiwari.com/sitemap.xml
+Sitemap: https://kishangeo.github.io/sitemap.xml
