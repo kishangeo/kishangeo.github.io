@@ -42,12 +42,12 @@ a{color:inherit}
 h1,h2,h3,h4{margin:0;font-weight:400;text-wrap:balance}
 p{margin:0}
 img{max-width:100%;height:auto;display:block}
-::selection{background:var(--ring);color:#04060B}
+::selection{background:var(--ring-solid);color:var(--on-accent)}
 :focus-visible{outline:2px solid var(--ember);outline-offset:4px}
 [hidden]{display:none !important}
 
 .skip{position:absolute;left:10px;top:10px;z-index:40;padding:10px 14px;
-  background:var(--ember);color:#04060B;font-family:var(--f-mono);font-size:11px;
+  background:var(--ember-solid);color:var(--on-accent);font-family:var(--f-mono);font-size:11px;
   letter-spacing:.12em;text-transform:uppercase;text-decoration:none;clip-path:inset(50%)}
 .skip:focus{clip-path:none}
 
@@ -55,9 +55,9 @@ img{max-width:100%;height:auto;display:block}
 #sky{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(60% 40% at 76% 6%, rgba(58,80,132,.28), transparent 70%),
-    radial-gradient(90% 60% at 10% 100%, rgba(30,42,74,.35), transparent 70%),
-    linear-gradient(180deg,#04060B 0%,#070B13 40%,#0A1018 100%);
+    radial-gradient(60% 40% at 76% 6%, var(--glow-1), transparent 70%),
+    radial-gradient(90% 60% at 10% 100%, var(--glow-2), transparent 70%),
+    linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) 40%,var(--sky-c) 100%);
 }
 #sky canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .starfield{z-index:1}
@@ -68,7 +68,7 @@ img{max-width:100%;height:auto;display:block}
 .bar{
   position:fixed;top:0;left:0;right:0;z-index:30;
   display:flex;align-items:center;gap:26px;padding:16px var(--gut);
-  background:linear-gradient(180deg,rgba(4,6,11,.88),rgba(4,6,11,0));
+  background:linear-gradient(180deg,rgba(var(--scrim-rgb),.88),rgba(var(--scrim-rgb),0));
 }
 .wordmark{display:flex;align-items:center;gap:11px;text-decoration:none;margin-right:auto}
 .wordmark img{width:28px;height:32px;object-fit:contain;border-radius:2px}
@@ -79,13 +79,52 @@ img{max-width:100%;height:auto;display:block}
 .bar a.nv{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
   color:var(--dim);text-decoration:none;padding:4px 0;position:relative}
 .bar a.nv::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:1px;
-  background:var(--ember);transition:right .3s cubic-bezier(.2,.8,.2,1)}
+  background:var(--ember-solid);transition:right .3s cubic-bezier(.2,.8,.2,1)}
 .bar a.nv:hover::after,.bar a.nv:focus-visible::after{right:0}
 @media (max-width:860px){.bar nav{display:none}}
 
+/* ---------- theme switch ----------
+   A track and a knob. The knob carries the symbol, so there is no text to
+   read and nothing to translate. 44x24 with a 44px hit area, which clears the
+   minimum touch target once the padding is counted. */
+.themebtn{
+  -webkit-appearance:none;appearance:none;flex:0 0 auto;
+  width:46px;height:25px;padding:0;border-radius:13px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel);
+  position:relative;display:none;   /* a switch that cannot switch is worse */
+  transition:background .3s ease,border-color .3s ease;
+}
+.js .themebtn{display:block}
+.themebtn:hover{border-color:var(--ember);background:var(--panel-2)}
+.themebtn .knob{
+  position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--ink);color:var(--on-ink);
+  transition:transform .34s cubic-bezier(.2,.8,.2,1),background .3s ease,color .3s ease;
+}
+:root[data-theme="light"] .themebtn .knob{transform:translateX(21px)}
+.themebtn svg{width:11px;height:11px;display:block;fill:none;
+  stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.themebtn .i-sun{display:none}
+:root[data-theme="light"] .themebtn .i-sun{display:block}
+:root[data-theme="light"] .themebtn .i-moon{display:none}
+@media (prefers-reduced-motion:reduce){
+  .themebtn,.themebtn .knob{transition:none}
+}
+
+/* Light mode turns the night off. The stars and the meteor shower are hidden
+   here AND their loop is stopped in the script, so this is not just paint. */
+:root[data-theme="light"] .starfield,
+:root[data-theme="light"] #sky canvas:not(.moon-canvas){display:none}
+/* Photographs and the drawn figures were graded for a dark page. A touch of
+   contrast keeps them from washing out against daylight. */
+:root[data-theme="light"] .mason img,
+:root[data-theme="light"] .shot img,
+:root[data-theme="light"] .plate img{filter:saturate(1.04) contrast(1.03)}
+
 #rail{
   position:fixed;top:0;left:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);
-  background:linear-gradient(90deg,var(--ring),var(--ember));z-index:31;
+  background:linear-gradient(90deg,var(--ring-solid),var(--ember-solid));z-index:31;
 }
 
 /* the depth caption, pinned bottom-left, counting as you fall */
@@ -108,7 +147,7 @@ main{position:relative;z-index:2}
 .ghost{
   position:absolute;right:var(--gut);top:clamp(40px,7vh,90px);
   font-family:var(--f-display);font-size:clamp(120px,22vw,300px);line-height:.8;
-  color:transparent;-webkit-text-stroke:1px rgba(170,192,236,.09);
+  color:transparent;-webkit-text-stroke:1px var(--stroke);
   pointer-events:none;user-select:none;z-index:-1;
 }
 .kicker{
@@ -146,8 +185,8 @@ h2 em{font-style:italic;color:var(--ring)}
   font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
   border:1px solid var(--line);color:var(--ink);background:transparent;transition:.22s;border-radius:999px}
 .b:hover,.b:focus-visible{border-color:var(--ember);color:var(--ember);transform:translateY(-2px)}
-.b.fill{background:var(--ink);color:#04060B;border-color:var(--ink);font-weight:600}
-.b.fill:hover,.b.fill:focus-visible{background:var(--ember);border-color:var(--ember);color:#04060B}
+.b.fill{background:var(--ink);color:var(--on-ink);border-color:var(--ink);font-weight:600}
+.b.fill:hover,.b.fill:focus-visible{background:var(--ember-solid);border-color:var(--ember-solid);color:var(--on-accent)}
 
 .scrollcue{position:absolute;left:var(--gut);bottom:74px;display:flex;align-items:center;gap:12px;
   font-family:var(--f-mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--faint)}
@@ -160,7 +199,7 @@ h2 em{font-style:italic;color:var(--ring)}
 .seq-grid{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut);width:100%;
   display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,6vw,90px);align-items:center}
 .seq-stage{position:relative;aspect-ratio:1/1;overflow:hidden;border:1px solid var(--line);border-radius:3px;
-  background:radial-gradient(75% 75% at 46% 36%,rgba(91,135,245,.10),rgba(8,12,20,.72) 72%)}
+  background:radial-gradient(75% 75% at 46% 36%,rgba(91,135,245,.10),rgba(var(--scrim-rgb),.72) 72%)}
 .seq-stage svg{position:absolute;inset:0;width:100%;height:100%}
 .seq-copy{display:flex;flex-direction:column}
 .steps{position:relative;min-height:clamp(250px,32vh,320px)}
@@ -180,7 +219,7 @@ h2 em{font-style:italic;color:var(--ring)}
   text-transform:uppercase;margin-bottom:14px;display:block}
 .stepbar{display:flex;gap:6px;margin-top:40px}
 .stepbar i{height:2px;flex:1;background:var(--line);position:relative;overflow:hidden}
-.stepbar i::after{content:"";position:absolute;inset:0;background:var(--ember);
+.stepbar i::after{content:"";position:absolute;inset:0;background:var(--ember-solid);
   transform:scaleX(0);transform-origin:0 50%;transition:transform .4s}
 .stepbar i.on::after{transform:scaleX(1)}
 @media (max-width:880px){
@@ -216,7 +255,7 @@ h2 em{font-style:italic;color:var(--ring)}
 .card.tall{background:transparent;border-color:transparent;flex-basis:clamp(240px,26vw,340px);justify-content:center}
 .card.tall .kicker{margin-bottom:18px}
 .badge{display:inline-block;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;
-  text-transform:uppercase;background:var(--ember);color:#04060B;padding:3px 8px;margin-left:8px;vertical-align:3px}
+  text-transform:uppercase;background:var(--ember-solid);color:var(--on-accent);padding:3px 8px;margin-left:8px;vertical-align:3px}
 @media (max-width:880px){
   .htrack{height:auto !important}
   .hpin{height:auto !important;padding:0}
@@ -286,7 +325,7 @@ h2 em{font-style:italic;color:var(--ring)}
 }
 
 /* ---------- figure plate ---------- */
-.plate2{background:#F3F1EC;padding:14px;border-radius:2px}
+.plate2{background:var(--plate);padding:14px;border-radius:2px}
 .plate2 img{width:100%}
 .cap{margin-top:13px;font-family:var(--f-mono);font-size:11px;line-height:1.6;color:var(--faint);
   border-top:1px solid var(--line-soft);padding-top:11px}
@@ -330,10 +369,15 @@ footer{position:relative;z-index:2;border-top:1px solid var(--line-soft);padding
 .js .up{opacity:0;transform:translateY(30px)}
 .js .stag > *{opacity:0;transform:translateY(24px)}
 .js .mason figure{opacity:0;transform:translateY(34px)}
+/* The impact diagram's layers are zeroed only when something will animate
+   them. No JavaScript, or reduced motion, and the whole figure is just drawn. */
+#gWave,#gVein,#gPhase,#gQuench{opacity:1}
+.js #gWave,.js #gVein,.js #gPhase,.js #gQuench{opacity:0}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js .up,.js .stag > *,.js .mason figure{opacity:1 !important;transform:none !important}
+  .js #gWave,.js #gVein,.js #gPhase,.js #gQuench{opacity:1 !important}
   .seq,.htrack{height:auto !important}
   .seq-pin,.hpin{height:auto !important}
   .step{position:relative !important;opacity:1 !important;margin-bottom:34px}
@@ -358,6 +402,84 @@ html,body{overflow-x:hidden;max-width:100%}
 
 /* Measured against the void: --faint was 3.78:1, below AA for small text. */
 :root{ --faint:#7E8AA0; }
+
+/* Values the dark build had hardcoded. They are tokens now purely so that the
+   light theme has one place to redefine them. Nothing about dark changed. */
+:root{
+  --scrim-rgb:4,6,11;          /* every UI overlay, panel and input ground */
+  --on-accent:#04060B;         /* text that sits ON a solid accent */
+  --on-ink:#04060B;            /* text that sits ON an --ink fill */
+  --ember-solid:#E9A33A;       /* gold as a FILL, never as text */
+  --ring-solid:#5B87F5;
+  --sky-a:#04060B; --sky-b:#070B13; --sky-c:#0A1018;
+  --glow-1:rgba(58,80,132,.28);
+  --glow-2:rgba(30,42,74,.35);
+  --stroke:rgba(170,192,236,.09);
+  --th:#0B1019;                /* sticky table head on the calculators */
+  --plate:#F3F1EC;
+}
+
+/* --------------------------------------------------------------------------
+   LIGHT THEME
+   Daylight, not an inverted night. The sky keeps its haze, the stars and the
+   meteors switch off, and the Moon stays because a daytime moon is a real
+   thing. Every colour below was measured against the ground it actually
+   composites onto, same as the dark set.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"]{
+  --void:#EEF2F8;
+  --deep:#E3E9F3;
+  --panel:rgba(30,56,110,.05);
+  --panel-2:rgba(30,56,110,.095);
+  --line:rgba(24,46,92,.19);
+  --line-soft:rgba(24,46,92,.10);
+
+  --ink:#111722;
+  --dim:#414B62;
+  --faint:#4F5A70;
+
+  --ring:#2B54C4;
+  --ember:#8A5709;
+  --olivine:#4A7A16;
+
+  --scrim-rgb:238,242,248;
+  --on-ink:#F4F7FC;
+  --sky-a:#DAE5F4; --sky-b:#E8EEF7; --sky-c:#F3F6FB;
+  --glow-1:rgba(120,162,232,.34);
+  --glow-2:rgba(186,206,238,.42);
+  --stroke:rgba(30,56,110,.13);
+  --th:#DCE4F1;
+}
+
+/* With JavaScript off the head script never runs, so nothing sets
+   data-theme. Honour the reader's system setting anyway. Same values as
+   the block above. */
+@media (prefers-color-scheme: light){
+  :root:not([data-theme]){
+    --void:#EEF2F8;
+    --deep:#E3E9F3;
+    --panel:rgba(30,56,110,.05);
+    --panel-2:rgba(30,56,110,.095);
+    --line:rgba(24,46,92,.19);
+    --line-soft:rgba(24,46,92,.10);
+
+    --ink:#111722;
+    --dim:#414B62;
+    --faint:#4F5A70;
+
+    --ring:#2B54C4;
+    --ember:#8A5709;
+    --olivine:#4A7A16;
+
+    --scrim-rgb:238,242,248;
+    --on-ink:#F4F7FC;
+    --sky-a:#DAE5F4; --sky-b:#E8EEF7; --sky-c:#F3F6FB;
+    --glow-1:rgba(120,162,232,.34);
+    --glow-2:rgba(186,206,238,.42);
+    --stroke:rgba(30,56,110,.13);
+    --th:#DCE4F1;
+  }
+}
 
 /* ==========================================================================
    Sections carried over from the first version
@@ -444,7 +566,7 @@ html,body{overflow-x:hidden;max-width:100%}
 .menubtn[aria-expanded="true"] span:last-child{transform:translateY(-3.25px) rotate(-45deg)}
 
 .drawer{
-  position:fixed;inset:0;z-index:28;background:rgba(4,6,11,.97);
+  position:fixed;inset:0;z-index:28;background:rgba(var(--scrim-rgb),.97);
   -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
   display:flex;align-items:center;justify-content:center;
   padding:88px var(--gut) 40px;overflow-y:auto;
@@ -471,6 +593,7 @@ html,body{overflow-x:hidden;max-width:100%}
 @media (max-width:880px){
   .desknav{display:none}
   .menubtn{display:flex}
+  .bar{gap:14px}
   .split,.two,.tl2,.galhead{grid-template-columns:1fr}
   .split .portrait-fig img{aspect-ratio:3/2;object-position:50% 20%}
   .road{grid-template-columns:repeat(2,1fr)}
@@ -552,11 +675,11 @@ html,body{overflow-x:hidden;max-width:100%}
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
 .field label{font-size:12.5px;color:var(--dim);line-height:1.4}
 .field label em{font-style:italic;color:var(--ink)}
-.ip{display:flex;align-items:stretch;border:1px solid var(--line);background:rgba(4,6,11,.55);border-radius:2px}
+.ip{display:flex;align-items:stretch;border:1px solid var(--line);background:rgba(var(--scrim-rgb),.55);border-radius:2px}
 .ip span{display:flex;align-items:center;padding:0 11px;font-family:var(--f-mono);font-size:10.5px;
   color:var(--faint);border-left:1px solid var(--line-soft);white-space:nowrap}
 .calc input,.calc select{
-  font-family:var(--f-mono);font-size:14px;color:var(--ink);background:rgba(4,6,11,.55);
+  font-family:var(--f-mono);font-size:14px;color:var(--ink);background:rgba(var(--scrim-rgb),.55);
   border:1px solid var(--line);padding:11px 12px;width:100%;min-width:0;border-radius:2px;
 }
 .ip input{border:0;background:transparent;flex:1}
@@ -585,13 +708,13 @@ html,body{overflow-x:hidden;max-width:100%}
 .stat dd b{color:var(--ember);font-family:var(--f-mono);font-size:17px;font-weight:500}
 
 .chart-box{position:relative;height:clamp(260px,42vh,360px);border:1px solid var(--line-soft);
-  background:rgba(4,6,11,.5);padding:13px;border-radius:2px}
+  background:rgba(var(--scrim-rgb),.5);padding:13px;border-radius:2px}
 .exports{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0}
 .tbl-wrap{overflow-x:auto;border:1px solid var(--line-soft);max-height:330px;overflow-y:auto;
-  background:rgba(4,6,11,.45);border-radius:2px;-webkit-overflow-scrolling:touch}
+  background:rgba(var(--scrim-rgb),.45);border-radius:2px;-webkit-overflow-scrolling:touch}
 .calc table{border-collapse:collapse;width:100%;font-family:var(--f-mono);font-size:11.5px;
   font-variant-numeric:tabular-nums}
-.calc th{position:sticky;top:0;background:#0B1019;color:var(--faint);text-align:right;
+.calc th{position:sticky;top:0;background:var(--th);color:var(--faint);text-align:right;
   font-weight:400;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:10px 13px;
   border-bottom:1px solid var(--line);white-space:nowrap}
 .calc td{padding:8px 13px;text-align:right;color:var(--dim);border-bottom:1px solid var(--line-soft);
@@ -627,7 +750,7 @@ html,body{overflow-x:hidden;max-width:100%}
    Without one it collided with body copy on every narrow screen. */
 .depthmeter{
   padding:7px 13px;border-radius:999px;
-  background:rgba(4,6,11,.66);
+  background:rgba(var(--scrim-rgb),.66);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   border:1px solid var(--line-soft);
 }
@@ -652,7 +775,7 @@ html,body{overflow-x:hidden;max-width:100%}
   .depthmeter{
     left:0;right:0;bottom:0;width:100%;
     padding:9px var(--gut) 9px;border-radius:0;border:0;border-top:1px solid var(--line-soft);
-    background:linear-gradient(180deg,rgba(4,6,11,0),rgba(4,6,11,.94) 42%);
+    background:linear-gradient(180deg,rgba(var(--scrim-rgb),0),rgba(var(--scrim-rgb),.94) 42%);
     justify-content:flex-start;gap:8px;
   }
   .depthmeter b{font-size:16px}
