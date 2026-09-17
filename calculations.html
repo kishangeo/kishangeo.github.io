@@ -2,78 +2,108 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Calculations — Kishan Tiwari</title>
-<meta name="description" content="Three interactive impact-petrology calculators: shock-melt vein cooling, peak shock pressure from the Hugoniot, and pi-group crater scaling. Charts and data export to Excel and CSV.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#04060B">
+<title>Impact petrology calculators, Kishan Tiwari</title>
+<meta name="description" content="Three interactive tools: shock-melt vein cooling, peak shock pressure from the Hugoniot, and pi-group crater scaling. Charts and Excel export, all computed in your browser.">
+<meta name="author" content="Kishan Tiwari">
 <link rel="canonical" href="https://www.ktiwari.com/calculations.html">
-<link rel="icon" href="assets/img/logo.webp" type="image/webp">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kishan Tiwari">
+<meta property="og:title" content="Impact petrology calculators, Kishan Tiwari">
+<meta property="og:description" content="Shock-melt vein cooling, peak shock pressure, and crater scaling. Charts and Excel export.">
+<meta property="og:url" content="https://www.ktiwari.com/calculations.html">
+<meta property="og:image" content="https://www.ktiwari.com/assets/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dr. Kishan Tiwari, shock metamorphism and planetary materials, with the Moon lit from the left.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Impact petrology calculators, Kishan Tiwari">
+<meta name="twitter:description" content="Shock-melt vein cooling, peak shock pressure, and crater scaling.">
+<meta name="twitter:image" content="https://www.ktiwari.com/assets/img/og.jpg">
+<link rel="icon" href="/assets/img/logo.webp" type="image/webp">
+<link rel="apple-touch-icon" href="/assets/img/logo.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/css/style.css">
-<script>(function(){try{var t=localStorage.getItem('kt-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="/assets/css/site.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script defer src="assets/js/main.js"></script>
-<script defer src="assets/js/calc.js"></script>
+<script defer src="/assets/js/moon-maps.js"></script>
+<script defer src="/assets/js/site.js"></script>
+<script defer src="/assets/js/calc.js"></script>
 </head>
-<body class="page-calc">
+<body class="page-calc" data-rail="step">
 
-<div id="stage" aria-hidden="true"></div>
+<a class="skip" href="#main">Skip to content</a>
+<div id="sky" aria-hidden="true"></div>
+<div id="rail" aria-hidden="true"></div>
 
-<div class="rail" aria-hidden="true">
-  <div class="rail-head">Depth</div>
-  <div class="rail-track" id="track">
-    <div class="rail-line"></div>
-    <div class="rail-kt"></div>
-    <div class="probe" id="probe" style="top:0"></div>
-  </div>
-  <div class="rail-foot">km</div>
+<div class="depthmeter" aria-hidden="true">
+  <b id="dm">01</b><span>of 04</span><em id="dmLabel">Tools</em>
 </div>
 
-<nav class="nav">
-  <a class="mark" href="index.html">
-    <img class="logo-img" src="assets/img/logo.webp" alt="KT monogram">
-    <span><b>Kishan Tiwari</b><br><i>Planetary Materials</i></span>
+<header class="bar">
+  <a class="wordmark" href="/">
+    <img src="/assets/img/logo.webp" alt="" width="28" height="32">
+    <span><b>Kishan Tiwari</b><i>Planetary materials</i></span>
   </a>
-  <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false" title="Switch to dark">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.6"/><path d="M12 2.4v2.2M12 19.4v2.2M2.4 12h2.2M19.4 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/></svg>
-    <span class="lbl">Dark</span>
+  <nav class="desknav" aria-label="Sections">
+    <a class="nv" href="/">Home</a>
+    <a class="nv" href="/#work">Work</a>
+    <a class="nv" href="/#papers">Papers</a>
+    <a class="nv" href="#calc-vein">Vein cooling</a>
+    <a class="nv" href="#calc-shock">Shock pressure</a>
+    <a class="nv" href="#calc-crater">Crater scaling</a>
+    <a class="nv" href="/#contact">Contact</a>
+  </nav>
+  <button class="menubtn" id="menuBtn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Open menu">
+    <span></span><span></span>
   </button>
-  <div class="nav-scroll">
-    <a class="lnk" href="index.html">Home</a>
-    <a class="lnk" href="index.html#research">Research</a>
-    <a class="lnk" href="index.html#publications">Publications</a>
-    <a class="lnk" href="#calc-vein">Vein cooling</a>
-    <a class="lnk" href="#calc-shock">Shock pressure</a>
-    <a class="lnk" href="#calc-crater">Crater scaling</a>
-    <a class="lnk" href="index.html#contact">Contact</a>
-  </div>
-</nav>
-
-<header class="hero">
-  <div class="hero-in">
-    <div class="eyebrow">Tools</div>
-    <h1>Do the <em>arithmetic</em><br>yourself.</h1>
-    <p class="lede">Three calculators I use in my own work, made public. Change the numbers, watch the curve
-      move, take the data away as a spreadsheet. Everything runs in your browser — nothing is uploaded,
-      and each model names the paper it comes from.</p>
-    <div class="cta-row">
-      <a class="btn solid" href="#calc-vein">Vein cooling</a>
-      <a class="btn" href="#calc-shock">Shock pressure</a>
-      <a class="btn" href="#calc-crater">Crater scaling</a>
-    </div>
-  </div>
 </header>
 
-<div class="shell">
+<div class="drawer" id="drawer" hidden>
+  <nav aria-label="Sections">
+    <a href="/">Home</a>
+    <a href="#calc-vein">Vein cooling</a>
+    <a href="#calc-shock">Shock pressure</a>
+    <a href="#calc-crater">Crater scaling</a>
+    <a href="#calc-notes">Caveats</a>
+    <a href="/#contact">Contact</a>
+  </nav>
+</div>
 
-<!-- ==================== 1. VEIN COOLING ==================== -->
-<section class="strata calc" id="calc-vein">
+<main id="main">
+
+<section class="hero" id="top" data-depth="1" data-label="Tools">
+  <div class="hero-in">
+    <div class="kicker">Tools</div>
+    <h1>
+      <span class="ln"><span>Do the</span></span>
+      <span class="ln"><span><em>arithmetic</em></span></span>
+      <span class="ln"><span>yourself.</span></span>
+    </h1>
+    <p class="deck">Three calculators I use in my own work, made public. Change the numbers, watch the
+      curve move, take the data away as a spreadsheet. Everything runs in your browser, nothing is
+      uploaded, and each model names the paper it comes from.</p>
+    <div class="cta">
+      <a class="b fill" href="#calc-vein">Vein cooling</a>
+      <a class="b" href="#calc-shock">Shock pressure</a>
+      <a class="b" href="#calc-crater">Crater scaling</a>
+    </div>
+  </div>
+  <div class="scrollcue"><i></i>Scroll to descend</div>
+</section>
+
+<section class="chapter calc" id="calc-vein" data-depth="2" data-label="Vein cooling">
   <div class="wrap">
-    <div class="head"><span class="depth">01 · Conduction</span><h2>Shock-melt vein cooling</h2></div>
-    <p class="sub">A vein of half-width <em>a</em>, molten at <em>T</em><sub>m</sub>, quenching into host rock at
+    <div class="kicker up">01 · Conduction</div>
+    <h2 class="up">Shock-melt vein cooling</h2>
+    <p class="deck up">A vein of half-width <em>a</em>, molten at <em>T</em><sub>m</sub>, quenching into host rock at
       <em>T</em><sub>h</sub>. Whether a high-pressure phase survives comes down to this curve: nucleation and
       growth need time above a threshold, and a thin vein does not give it to them.</p>
 
@@ -97,7 +127,7 @@
         <div class="field"><label for="v-thresh">Threshold temperature</label>
           <div class="ip"><input type="number" id="v-thresh" value="1500" step="50"><span>K</span></div></div>
         <p class="err" id="v-err" hidden></p>
-        <button class="btn solid" type="button" id="v-run">Calculate</button>
+        <button class="b fill" type="button" id="v-run">Calculate</button>
         <div class="presets">
           <span>Presets</span>
           <button type="button" class="chip" data-preset="katol">Katol, 100 µm</button>
@@ -111,9 +141,9 @@
         <dl class="stats" id="v-out"></dl>
         <div class="chart-box"><canvas id="v-chart"></canvas></div>
         <div class="exports">
-          <button class="btn sm" type="button" data-export="xlsx:vein">Excel .xlsx</button>
-          <button class="btn sm" type="button" data-export="csv:vein">CSV</button>
-          <button class="btn sm" type="button" data-export="png:vein:v-chart">Chart .png</button>
+          <button class="b sm" type="button" data-export="xlsx:vein">Excel .xlsx</button>
+          <button class="b sm" type="button" data-export="csv:vein">CSV</button>
+          <button class="b sm" type="button" data-export="png:vein:v-chart">Chart .png</button>
         </div>
         <div class="tbl-wrap"><table id="v-table"></table></div>
         <p class="tbl-note" id="v-table-note"></p>
@@ -125,11 +155,11 @@
   </div>
 </section>
 
-<!-- ==================== 2. SHOCK PRESSURE ==================== -->
-<section class="strata calc" id="calc-shock">
+<section class="chapter calc" id="calc-shock" data-depth="3" data-label="Shock pressure">
   <div class="wrap">
-    <div class="head"><span class="depth">02 · Hugoniot</span><h2>Peak shock pressure</h2></div>
-    <p class="sub">Planar impact approximation with a linear shock–particle Hugoniot,
+    <div class="kicker up">02 · Hugoniot</div>
+    <h2 class="up">Peak shock pressure</h2>
+    <p class="deck up">Planar impact approximation with a linear shock–particle Hugoniot,
       <em>U</em><sub>s</sub> = <em>C</em><sub>0</sub> + <em>S·u</em><sub>p</sub>, solved by impedance match so the
       impactor and target need not be the same material. The pressure is then mapped onto the Stöffler shock stages.</p>
 
@@ -155,7 +185,7 @@
           <div class="field"><label for="p-tgt-s">S</label><input type="number" id="p-tgt-s" step="0.05"></div>
         </div>
         <p class="err" id="p-err" hidden></p>
-        <button class="btn solid" type="button" id="p-run">Calculate</button>
+        <button class="b fill" type="button" id="p-run">Calculate</button>
       </form>
 
       <div class="panel out">
@@ -163,9 +193,9 @@
         <dl class="stats" id="p-out"></dl>
         <div class="chart-box"><canvas id="p-chart"></canvas></div>
         <div class="exports">
-          <button class="btn sm" type="button" data-export="xlsx:shock">Excel .xlsx</button>
-          <button class="btn sm" type="button" data-export="csv:shock">CSV</button>
-          <button class="btn sm" type="button" data-export="png:shock:p-chart">Chart .png</button>
+          <button class="b sm" type="button" data-export="xlsx:shock">Excel .xlsx</button>
+          <button class="b sm" type="button" data-export="csv:shock">CSV</button>
+          <button class="b sm" type="button" data-export="png:shock:p-chart">Chart .png</button>
         </div>
         <div class="tbl-wrap"><table id="p-table"></table></div>
         <p class="tbl-note" id="p-table-note"></p>
@@ -177,12 +207,12 @@
   </div>
 </section>
 
-<!-- ==================== 3. CRATER SCALING ==================== -->
-<section class="strata calc" id="calc-crater">
+<section class="chapter calc" id="calc-crater" data-depth="4" data-label="Crater scaling">
   <div class="wrap">
-    <div class="head"><span class="depth">03 · π-scaling</span><h2>Crater scaling</h2></div>
-    <p class="sub">How big a hole a given impactor makes, in the gravity regime, in competent rock. The Lonar preset
-      reproduces the real crater's 1.88 km in Deccan basalt for a plausible impactor — which is the most you
+    <div class="kicker up">03 · π-scaling</div>
+    <h2 class="up">Crater scaling</h2>
+    <p class="deck up">How big a hole a given impactor makes, in the gravity regime, in competent rock. The Lonar preset
+      reproduces the real crater's 1.88 km in Deccan basalt for a plausible impactor, which is the most you
       should ask of a scaling law.</p>
 
     <div class="calc-grid">
@@ -201,7 +231,7 @@
         <div class="field"><label for="c-g">Surface gravity</label>
           <div class="ip"><input type="number" id="c-g" value="9.81" step="0.01" min="0.001"><span>m/s²</span></div></div>
         <p class="err" id="c-err" hidden></p>
-        <button class="btn solid" type="button" id="c-run">Calculate</button>
+        <button class="b fill" type="button" id="c-run">Calculate</button>
         <div class="presets">
           <span>Presets</span>
           <button type="button" class="chip" data-cpreset="lonar">Lonar</button>
@@ -215,9 +245,9 @@
         <dl class="stats" id="c-out"></dl>
         <div class="chart-box"><canvas id="c-chart"></canvas></div>
         <div class="exports">
-          <button class="btn sm" type="button" data-export="xlsx:crater">Excel .xlsx</button>
-          <button class="btn sm" type="button" data-export="csv:crater">CSV</button>
-          <button class="btn sm" type="button" data-export="png:crater:c-chart">Chart .png</button>
+          <button class="b sm" type="button" data-export="xlsx:crater">Excel .xlsx</button>
+          <button class="b sm" type="button" data-export="csv:crater">CSV</button>
+          <button class="b sm" type="button" data-export="png:crater:c-chart">Chart .png</button>
         </div>
         <div class="tbl-wrap"><table id="c-table"></table></div>
         <p class="tbl-note" id="c-table-note"></p>
@@ -229,12 +259,13 @@
   </div>
 </section>
 
-<section class="strata" id="calc-notes">
+<section class="chapter" id="calc-notes" data-depth="4" data-label="Caveats">
   <div class="wrap">
-    <div class="head"><span class="depth">Caveats</span><h2>What these will and won't tell you</h2></div>
-    <p class="sub">Every one of these is a first-order estimate. Treat them as a way to check whether a number is
+    <div class="kicker up">Caveats</div>
+    <h2 class="up">What these will and won't tell you</h2>
+    <p class="deck up">Every one of these is a first-order estimate. Treat them as a way to check whether a number is
       plausible, not as a substitute for a model.</p>
-    <div class="notes">
+    <div class="notes stag">
       <div><h4>Vein cooling</h4><p>Assumes constant thermal properties, no latent heat of crystallisation, and a
         host that is infinite and initially uniform. Latent heat holds the vein hotter for longer than this curve
         shows, so quench times here are lower bounds.</p></div>
@@ -247,13 +278,13 @@
     </div>
   </div>
 </section>
-</div>
+</main>
 
 <footer>
-  <div class="foot-in">
+  <div class="foot">
     <span>© 2026 Kishan Tiwari · ktiwari.com</span>
     <span>Calculations run locally in your browser</span>
-    <span><a href="index.html">← Back to the site</a></span>
+    <span><a href="/">Back to the site</a></span>
   </div>
 </footer>
 
