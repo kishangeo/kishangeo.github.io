@@ -58,37 +58,77 @@
   (function sky() {
     var host = document.getElementById('sky');
     if (!host) return;
+
+    /* Two layers, on purpose.
+
+       The starfield never changes. It is painted once into an offscreen canvas,
+       handed to a plain div as a background image, and then only ever moved with
+       a transform. The compositor keeps it as a static layer, so it costs
+       nothing per frame no matter what is drawn on top of it.
+
+       The canvas above it carries just the things that actually move: a few
+       twinkling stars, drifting dust, and the meteors. That is roughly eighty
+       small operations a frame instead of five hundred, and it is what stopped
+       the photo galleries re-compositing nineteen images sixty times a second. */
+    var stars = document.createElement('div');
+    stars.className = 'starfield';
+    host.appendChild(stars);
+
     var cv = document.createElement('canvas');
     host.appendChild(cv);
     var g = cv.getContext('2d');
-    var W = 0, H = 0, stars = [], shower = [], dust = [];
 
-    function seed() {
-      stars = [];
-      var n = Math.round(Math.min(520, (W * H) / 4200));
+    var W = 0, H = 0, DPR = 1, TILE = 0;
+    var shower = [], dust = [], twinklers = [];
+
+    function bake() {
+      TILE = Math.max(700, Math.round(H));
+      var t = document.createElement('canvas');
+      t.width = Math.round(W); t.height = TILE;
+      var tg = t.getContext('2d');
+      var n = Math.round(Math.min(520, (W * TILE) / 4200));
       for (var i = 0; i < n; i++) {
-        stars.push({
-          x: Math.random(), y: Math.random(),
-          r: Math.pow(Math.random(), 2.3) * 1.6 + 0.24,
-          tw: Math.random() * 6.283, sp: 0.35 + Math.random() * 1.7,
-          warm: Math.random() > 0.78
-        });
+        var r = Math.pow(Math.random(), 2.3) * 1.5 + 0.24;
+        var a = (0.34 + r * 0.46) * (0.55 + Math.random() * 0.45);
+        tg.beginPath();
+        tg.arc(Math.random() * W, Math.random() * TILE, r, 0, 6.2832);
+        tg.fillStyle = 'rgba(' + (Math.random() > 0.78 ? '255,232,198' : '222,234,255') + ',' + a.toFixed(3) + ')';
+        tg.fill();
+      }
+      stars.style.backgroundImage = 'url(' + t.toDataURL('image/png') + ')';
+      stars.style.backgroundSize = W + 'px ' + TILE + 'px';
+      stars.style.height = (TILE * 2) + 'px';
+
+      twinklers = [];
+      for (var k = 0; k < 30; k++) {
+        twinklers.push({ x: Math.random(), y: Math.random(), r: 0.7 + Math.random() * 1.1,
+          tw: Math.random() * 6.283, sp: 0.35 + Math.random() * 1.5, warm: Math.random() > 0.76 });
       }
       dust = [];
-      for (var j = 0; j < 80; j++) {
+      for (var d = 0; d < 44; d++) {
         dust.push({ x: Math.random(), y: Math.random(), r: Math.random() * 0.9 + 0.2, v: 0.004 + Math.random() * 0.013 });
       }
     }
+
     function size() {
-      var DPR = Math.min(window.devicePixelRatio || 1, 2);
+      DPR = Math.min(window.devicePixelRatio || 1, 1.5);
       W = window.innerWidth; H = window.innerHeight;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
       cv.style.width = W + 'px'; cv.style.height = H + 'px';
       g.setTransform(DPR, 0, 0, DPR, 0, 0);
-      seed();
+      bake();
     }
     size();
-    window.addEventListener('resize', size);
+    var rt;
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(size, 160); });
+
+    // moving the field is a transform on a static layer, so it is compositor work
+    function drift() {
+      if (!TILE) return;
+      stars.style.transform = 'translate3d(0,' + (-((window.scrollY * 0.055) % TILE)).toFixed(1) + 'px,0)';
+    }
+    window.addEventListener('scroll', drift, { passive: true });
+    drift();
 
     function spawn() {
       var top = Math.random() < 0.6, sp = 250 + Math.random() * 560, mag = 0.3 + Math.random() * 0.7;
@@ -101,21 +141,27 @@
       });
     }
 
-    var acc = 0, last = performance.now();
+    var acc = 0, last = performance.now(), prev = 0;
+    var FRAME = 1000 / 34;
+
     (function draw(now) {
-      var dt = Math.min(0.05, (now - last) / 1000); last = now;
+      requestAnimationFrame(draw);
+      if (now - prev < FRAME) return;
+      var dt = Math.min(0.05, (now - last) / 1000);
+      last = now; prev = now;
+
       g.clearRect(0, 0, W, H);
       var phase = window.scrollY * 0.055;
 
-      for (var i = 0; i < stars.length; i++) {
-        var s = stars[i];
-        var y = (s.y * H + phase * (0.22 + s.r * 0.55)) % (H + 60) - 30;
-        var tw = reduce ? 1 : 0.6 + 0.4 * Math.sin(now / 1000 * s.sp + s.tw);
-        var a = tw * (0.34 + s.r * 0.46);
+      for (var i = 0; i < twinklers.length; i++) {
+        var s = twinklers[i];
+        var y = (s.y * H + phase * 0.5) % (H + 60) - 30;
+        var tw = reduce ? 1 : 0.55 + 0.45 * Math.sin(now / 1000 * s.sp + s.tw);
         g.beginPath(); g.arc(s.x * W, y, s.r, 0, 6.2832);
-        g.fillStyle = 'rgba(' + (s.warm ? '255,232,198' : '222,234,255') + ',' + a.toFixed(3) + ')';
+        g.fillStyle = 'rgba(' + (s.warm ? '255,232,198' : '222,234,255') + ',' + (tw * 0.8).toFixed(3) + ')';
         g.fill();
       }
+
       for (var d = 0; d < dust.length; d++) {
         var p = dust[d];
         p.y -= p.v * dt; if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
@@ -133,8 +179,8 @@
         var e = Math.exp(-Math.pow((o.life - o.flare) / 0.26, 2)) * (1 - o.life * 0.35);
         var al = e * o.mag;
         if (al <= 0.004) continue;
-        var len = o.tail * (0.45 + e * 0.55), n = Math.hypot(o.vx, o.vy) || 1;
-        var tx = o.x - o.vx / n * len, ty = o.y - o.vy / n * len;
+        var len = o.tail * (0.45 + e * 0.55), nn = Math.hypot(o.vx, o.vy) || 1;
+        var tx = o.x - o.vx / nn * len, ty = o.y - o.vy / nn * len;
         var gr = g.createLinearGradient(o.x, o.y, tx, ty);
         gr.addColorStop(0, 'rgba(255,244,214,' + (al * 0.95).toFixed(3) + ')');
         gr.addColorStop(0.28, 'rgba(233,163,58,' + (al * 0.5).toFixed(3) + ')');
@@ -144,7 +190,6 @@
         g.fillStyle = 'rgba(255,244,214,' + (al * 0.9).toFixed(3) + ')';
         g.beginPath(); g.arc(o.x, o.y, 0.6 + o.mag * 1.5, 0, 6.2832); g.fill();
       }
-      requestAnimationFrame(draw);
     })(last);
   })();
 
@@ -227,9 +272,15 @@
       gsap.to(group.children, { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out', stagger: 0.055,
         scrollTrigger: { trigger: group, start: 'top 86%' } });
     });
-    gsap.utils.toArray('.mason figure').forEach(function (fig, i) {
-      gsap.from(fig, { opacity: 0, y: 40, duration: 0.95, ease: 'expo.out',
-        scrollTrigger: { trigger: fig, start: 'top 94%' }, delay: (i % 3) * 0.05 });
+    // One batched trigger instead of one per figure. With two galleries that
+    // is 1 trigger rather than 17, and the reveal is a plain `to` so it can
+    // never inherit opacity 0 as its end value the way `from` did.
+    ScrollTrigger.batch('.mason figure', {
+      start: 'top 92%',
+      onEnter: function (batch) {
+        gsap.to(batch, { opacity: 1, y: 0, duration: 0.85, ease: 'expo.out',
+                         stagger: 0.06, overwrite: true });
+      }
     });
 
     /* --- the timeline draws its own line ------------------------------- */
@@ -376,8 +427,11 @@
   camera.position.set(0, 0, 9);
 
   var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.setSize(window.innerWidth, window.innerHeight);
+  // this class carries the stacking order in the stylesheet, and without it the
+  // Moon and the sky were fighting over which sat on top
+  renderer.domElement.className = 'moon-canvas';
   host.appendChild(renderer.domElement);
 
   var moon = new THREE.Mesh(
@@ -418,14 +472,20 @@
      distant at the bottom. */
   /* The hero is the only place it is allowed to be a subject. After that it
      is scenery: a limb at the edge of the frame, dimmed, never over type. */
+  /* By the time the reader is past the core to mantle boundary they are five
+     thousand kilometres underground. A Moon hanging there makes no sense, and
+     it is also a full-viewport WebGL layer sitting under the photo galleries,
+     which forces every image above it to be re-composited on every frame. So
+     it fades out as the descent deepens and the layer is then culled entirely.
+     Measured: 49.9ms a frame through the galleries with it lit, 16.7ms without. */
   var PATH = [
     { at: 0.00, x:  4.15, y:  0.70, s: 0.92, o: 0.92 },
-    { at: 0.14, x:  6.90, y:  1.35, s: 0.74, o: 0.60 },
-    { at: 0.28, x:  1.60, y: -5.60, s: 0.68, o: 0.44 },
-    { at: 0.42, x: -6.70, y: -0.95, s: 0.58, o: 0.48 },
-    { at: 0.58, x: -1.40, y: -5.40, s: 0.52, o: 0.40 },
-    { at: 0.72, x:  6.50, y:  0.70, s: 0.46, o: 0.46 },
-    { at: 1.00, x: -5.60, y: -1.45, s: 0.36, o: 0.42 }
+    { at: 0.14, x:  6.90, y:  1.35, s: 0.74, o: 0.62 },
+    { at: 0.28, x:  1.60, y: -5.60, s: 0.68, o: 0.46 },
+    { at: 0.42, x: -6.70, y: -0.95, s: 0.58, o: 0.42 },
+    { at: 0.56, x: -1.40, y: -5.40, s: 0.52, o: 0.24 },
+    { at: 0.68, x:  6.50, y:  0.70, s: 0.46, o: 0.05 },
+    { at: 1.00, x: -5.60, y: -1.45, s: 0.36, o: 0.00 }
   ];
   function pathAt(f) {
     var i = 0;
@@ -440,7 +500,9 @@
     };
   }
 
-  var f = 0, t0 = performance.now();
+  var BASE_DPR = Math.min(window.devicePixelRatio || 1, 1.5), curDPR = BASE_DPR;
+  var _v = new THREE.Vector3(), _e = new THREE.Vector3(), moonShown = true;
+  var f = 0, t0 = performance.now(), lastMoon = 0;
   (function loop(now) {
     var t = (now - t0) / 1000;
     var h = document.documentElement.scrollHeight - window.innerHeight;
@@ -465,7 +527,33 @@
     }
 
     camera.lookAt(0, 0, 0);
-    renderer.render(scene, camera);
+
+    /* The Moon is a full-viewport WebGL layer, and everything drawn above it
+       has to be re-composited each time it renders. In the hero it deserves
+       full resolution. Past that it is a small dim body at the edge of the
+       frame, so it drops to a quarter of the pixels and nobody can tell. */
+    var wantDPR = f < 0.16 ? BASE_DPR : (f < 0.4 ? 1 : 0.7);
+    if (wantDPR !== curDPR) {
+      curDPR = wantDPR;
+      renderer.setPixelRatio(curDPR);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    /* Cull it properly. Its path takes it right out of frame for long
+       stretches, and a hidden layer is not composited at all, whereas an
+       opacity-zero one still is. */
+    var centre = _v.copy(pivot.position).project(camera);
+    var edge = _e.set(pivot.position.x + 2.1 * pivot.scale.x, pivot.position.y, 0).project(camera);
+    var rad = Math.abs(edge.x - centre.x) + 0.02;
+    var onScreen = Math.abs(centre.x) - rad < 1 && Math.abs(centre.y) - rad * (window.innerWidth / window.innerHeight) < 1;
+    var vis = parseFloat(renderer.domElement.style.opacity || '1');
+    var show = onScreen && vis > 0.06;
+
+    if (show !== moonShown) {
+      moonShown = show;
+      renderer.domElement.style.visibility = show ? 'visible' : 'hidden';
+    }
+    if (show && (now - lastMoon) > 22) { renderer.render(scene, camera); lastMoon = now; }
     requestAnimationFrame(loop);
   })(performance.now());
 })();
