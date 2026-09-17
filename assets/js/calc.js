@@ -32,11 +32,25 @@
     return t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
   }
 
+  /* These were still asking for version one's token names, which version two
+     renamed, so every label fell back to the light-theme grey and was close to
+     invisible on the dark page. One place to read them now, and the charts
+     restyle themselves when the theme switch is used. */
+  function palette() {
+    return {
+      grid: isDark() ? 'rgba(170,192,236,.13)' : 'rgba(24,46,92,.15)',
+      ink: tok('--dim') || '#98A2B6',
+      lbl: tok('--faint') || '#7E8AA0',
+      head: tok('--ink') || '#EEF1F7',
+      surface: isDark() ? '#0B1019' : '#FFFFFF',
+      line: tok('--line') || 'rgba(170,192,236,.13)'
+    };
+  }
+
   function plot(key, canvasId, cfg) {
     if (charts[key]) charts[key].destroy();
-    var grid = isDark() ? 'rgba(236,231,221,.10)' : 'rgba(33,30,25,.10)';
-    var ink = tok('--text-dim') || '#5F594D';
-    var lbl = tok('--text-faint') || '#8C8578';
+    var pal = palette();
+    var grid = pal.grid, ink = pal.ink, lbl = pal.lbl;
 
     cfg.options = Object.assign({
       responsive: true,
@@ -45,9 +59,9 @@
       plugins: {
         legend: { labels: { color: ink, font: { family: 'IBM Plex Mono, monospace', size: 10 }, boxWidth: 10, boxHeight: 2 } },
         tooltip: {
-          backgroundColor: isDark() ? '#1D242E' : '#FFFFFF',
-          titleColor: tok('--text'), bodyColor: ink,
-          borderColor: tok('--line'), borderWidth: 1, padding: 10,
+          backgroundColor: pal.surface,
+          titleColor: pal.head, bodyColor: ink,
+          borderColor: pal.line, borderWidth: 1, padding: 10,
           titleFont: { family: 'IBM Plex Mono, monospace', size: 10 },
           bodyFont: { family: 'IBM Plex Mono, monospace', size: 11 }
         }
@@ -65,6 +79,27 @@
     charts[key] = new Chart($(canvasId).getContext('2d'), cfg);
     return charts[key];
   }
+
+  // repaint whatever is already on screen when the theme changes
+  window.addEventListener('kt:theme', function () {
+    var pal = palette();
+    Object.keys(charts).forEach(function (k) {
+      var c = charts[k]; if (!c) return;
+      var o = c.options;
+      o.plugins.legend.labels.color = pal.ink;
+      o.plugins.tooltip.backgroundColor = pal.surface;
+      o.plugins.tooltip.titleColor = pal.head;
+      o.plugins.tooltip.bodyColor = pal.ink;
+      o.plugins.tooltip.borderColor = pal.line;
+      ['x', 'y'].forEach(function (ax) {
+        if (!o.scales[ax]) return;
+        o.scales[ax].grid.color = pal.grid;
+        o.scales[ax].ticks.color = pal.lbl;
+        o.scales[ax].title.color = pal.lbl;
+      });
+      c.update('none');
+    });
+  });
 
   var GOLD = '#C8971F', RING = '#2A4FB0', OLIV = '#6E7A18', HOT = '#B4442A';
 

@@ -21,6 +21,53 @@
   var hasGSAP = !!(window.gsap && window.ScrollTrigger);
   if (hasGSAP) gsap.registerPlugin(ScrollTrigger);
 
+  /* --------------------------------------------------------------- theme
+     The head script already set data-theme before the first paint, so all
+     this does is wire the switch and tell the sky and the Moon about it.
+     A choice sticks; until one is made the OS setting wins, live. */
+  var THEME_KEY = 'kt-theme';
+  function currentTheme() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+
+  (function themeSwitch() {
+    var btn = document.getElementById('themeBtn');
+    var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+
+    function stored() {
+      try { var v = localStorage.getItem(THEME_KEY); return v === 'light' || v === 'dark' ? v : null; }
+      catch (e) { return null; }
+    }
+
+    function apply(mode, remember) {
+      root.setAttribute('data-theme', mode);
+      if (remember) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) {} }
+      if (btn) {
+        var light = mode === 'light';
+        btn.setAttribute('aria-checked', String(light));
+        btn.setAttribute('aria-label', light ? 'Use dark theme' : 'Use light theme');
+      }
+      // keep the phone status bar in step with the page it is sitting above
+      var m = document.querySelector('meta[name="theme-color"]:not([media])');
+      if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
+      m.setAttribute('content', mode === 'light' ? '#EEF2F8' : '#04060B');
+
+      window.dispatchEvent(new CustomEvent('kt:theme', { detail: { mode: mode } }));
+    }
+
+    apply(currentTheme(), false);
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        apply(currentTheme() === 'light' ? 'dark' : 'light', true);
+      });
+    }
+    // follow the system only while the reader has not chosen for themselves
+    if (mq && mq.addEventListener) {
+      mq.addEventListener('change', function (e) {
+        if (!stored()) apply(e.matches ? 'light' : 'dark', false);
+      });
+    }
+  })();
+
   /* ---------------------------------------------------------------- menu */
   (function drawer() {
     var btn = document.getElementById('menuBtn');
@@ -144,8 +191,21 @@
     var acc = 0, last = performance.now(), prev = 0;
     var FRAME = 1000 / 34;
 
+    /* In daylight the stars and the shower are gone. The stylesheet hides the
+       layers; this stops the work. Drawing eighty invisible sprites a second
+       costs exactly as much as drawing eighty visible ones. */
+    var night = currentTheme() === 'dark', wiped = false;
+    window.addEventListener('kt:theme', function (e) {
+      night = e.detail.mode === 'dark';
+      if (night) { wiped = false; last = prev = performance.now(); }
+    });
+
     (function draw(now) {
       requestAnimationFrame(draw);
+      if (!night) {
+        if (!wiped) { g.clearRect(0, 0, W, H); shower.length = 0; wiped = true; }
+        return;
+      }
       if (now - prev < FRAME) return;
       var dt = Math.min(0.05, (now - last) / 1000);
       last = now; prev = now;
@@ -383,7 +443,7 @@
       // stacked, so every step is simply visible
       gsap.set('.step', { clearProps: 'all' });
       gsap.utils.toArray('.stepbar i').forEach(function (bb) { bb.classList.add('on'); });
-      ['#gWave', '#gVein', '#gPhase'].forEach(function (sel) {
+      ['#gWave', '#gVein', '#gPhase', '#gQuench'].forEach(function (sel) {
         var n = document.querySelector(sel); if (n) gsap.set(n, { opacity: 1 });
       });
       gsap.set('#gVein path', { clearProps: 'strokeDasharray,strokeDashoffset' });
@@ -402,7 +462,7 @@
     });
     document.querySelectorAll('.hero h1 .ln > span').forEach(function (el) { el.style.transform = 'none'; });
     var dl = document.getElementById('drawline'); if (dl) dl.setAttribute('stroke-dashoffset', '0');
-    ['#gWave', '#gVein', '#gPhase'].forEach(function (sel) {
+    ['#gWave', '#gVein', '#gPhase', '#gQuench'].forEach(function (sel) {
       var n = document.querySelector(sel); if (n) n.setAttribute('opacity', '1');
     });
     document.querySelectorAll('.stepbar i').forEach(function (b) { b.classList.add('on'); });
@@ -453,7 +513,24 @@
   var shine = new THREE.DirectionalLight(0x4C6BA8, 0.16);
   shine.position.set(4.5, -1.5, 1.5);
   scene.add(shine);
-  scene.add(new THREE.AmbientLight(0xFFFFFF, 0.05));
+  var ambient = new THREE.AmbientLight(0xFFFFFF, 0.05);
+  scene.add(ambient);
+
+  /* A daytime moon is a real sight, so it stays. It is lit differently: the
+     night sky puts almost nothing back into the shadowed limb, daylight
+     fills it, and the whole disc sits back into the haze rather than
+     glowing out of it. */
+  var moonFade = 1;
+  function relight(mode) {
+    var day = mode === 'light';
+    sun.intensity = day ? 2.1 : 3.2;
+    shine.color.set(day ? 0xBFD2F0 : 0x4C6BA8);
+    shine.intensity = day ? 0.55 : 0.16;
+    ambient.intensity = day ? 0.46 : 0.05;
+    moonFade = day ? 0.5 : 1;
+  }
+  relight(document.documentElement.getAttribute('data-theme'));
+  window.addEventListener('kt:theme', function (e) { relight(e.detail.mode); });
 
   var mx = 0, my = 0, tmx = 0, tmy = 0;
   window.addEventListener('pointermove', function (e) {
@@ -517,7 +594,7 @@
     var p = pathAt(f);
     pivot.position.set(p.x * (narrow ? 1.25 : 1) + mx * 0.6, p.y - my * 0.45, 0);
     pivot.scale.setScalar(p.s * (narrow ? 0.5 : 0.92));
-    renderer.domElement.style.opacity = (p.o * (narrow ? 0.62 : 1)).toFixed(3);
+    renderer.domElement.style.opacity = (p.o * (narrow ? 0.62 : 1) * moonFade).toFixed(3);
 
     if (!reduce) {
       moon.rotation.y = t * 0.026 + f * 2.2;
