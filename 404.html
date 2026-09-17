@@ -3,8 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#04060B">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#04060B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EEF2F8" media="(prefers-color-scheme: light)">
+<script>/* Runs before the first paint, so the page never flashes the wrong theme. */
+(function(){try{var t=localStorage.getItem('kt-theme');
+if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}
+document.documentElement.setAttribute('data-theme',t);}catch(e){
+document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>Not found, Kishan Tiwari</title>
 <meta name="description" content="That page does not exist on this site.">
 <meta name="robots" content="noindex">
@@ -33,6 +39,12 @@
     <img src="/assets/img/logo.webp" alt="" width="28" height="32">
     <span><b>Kishan Tiwari</b><i>Planetary materials</i></span>
   </a>
+  <button class="themebtn" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="Use light theme">
+    <span class="knob">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.1"/><path d="M12 2.6v2.1M12 19.3v2.1M4.3 4.3l1.5 1.5M18.2 18.2l1.5 1.5M2.6 12h2.1M19.3 12h2.1M4.3 19.7l1.5-1.5M18.2 5.8l1.5-1.5"/></svg>
+    </span>
+  </button>
 </header>
 <main id="main">
   <section class="lost">

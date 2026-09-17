@@ -3,8 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#04060B">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#04060B" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EEF2F8" media="(prefers-color-scheme: light)">
+<script>/* Runs before the first paint, so the page never flashes the wrong theme. */
+(function(){try{var t=localStorage.getItem('kt-theme');
+if(t!=='light'&&t!=='dark'){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}
+document.documentElement.setAttribute('data-theme',t);}catch(e){
+document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>Kishan Tiwari, shock metamorphism and planetary materials</title>
 <meta name="description" content="Dr. Kishan Tiwari, planetary materials scientist at IIT Kharagpur. Shock metamorphism, high-pressure mineralogy and meteorite petrology in the Katol, Kamargaon and Bori chondrites and the Lonar crater.">
 <meta name="author" content="Kishan Tiwari">
@@ -34,7 +40,7 @@
 "email":"mailto:kishantiwari.geo@gmail.com",
 "affiliation":{"@type":"CollegeOrUniversity","name":"Indian Institute of Technology Kharagpur"},
 "knowsAbout":["Shock metamorphism","High-pressure mineralogy","Meteorite petrology","Impact cratering"],
-"sameAs":["https://scholar.google.co.in/citations?user=qSaVEWcAAAAJ","https://www.researchgate.net/profile/Kishan-Tiwari-4","https://www.linkedin.com/in/kishan-tiwari-50ba58221/","https://twitter.com/kishan_geo"]}
+"sameAs":["https://scholar.google.co.in/citations?user=qSaVEWcAAAAJ","https://www.researchgate.net/profile/Kishan-Tiwari-4","https://www.linkedin.com/in/dr-kishan-tiwari-50ba58221/","https://x.com/kishan_iitkgp"]}
 </script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -67,6 +73,12 @@
     <a class="nv" href="/calculations.html">Calculators</a>
     <a class="nv" href="#contact">Contact</a>
   </nav>
+  <button class="themebtn" id="themeBtn" type="button" role="switch" aria-checked="false" aria-label="Use light theme">
+    <span class="knob">
+      <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4 8.4 8.4 0 1 0 20 14.2Z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.1"/><path d="M12 2.6v2.1M12 19.3v2.1M4.3 4.3l1.5 1.5M18.2 18.2l1.5 1.5M2.6 12h2.1M19.3 12h2.1M4.3 19.7l1.5-1.5M18.2 5.8l1.5-1.5"/></svg>
+    </span>
+  </button>
   <button class="menubtn" id="menuBtn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Open menu">
     <span></span><span></span>
   </button>
