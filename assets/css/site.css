@@ -270,11 +270,10 @@ h2 em{font-style:italic;color:var(--ring)}
    which is exactly what a scroll reveal does 60 times a second. Measured at
    116ms per frame against 16.7ms for the grid-based galleries in this same
    page. Grid it is. */
-.mason{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+.mason{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));
   gap:14px;margin-top:clamp(28px,4vw,44px)}
 .mason figure{position:relative;margin:0;overflow:hidden;aspect-ratio:4/3;
   border:1px solid var(--line-soft);border-radius:2px;background:var(--deep)}
-.mason figure.wide{grid-column:span 2;aspect-ratio:16/10}
 .mason img{width:100%;height:100%;object-fit:cover;
   transition:transform .8s cubic-bezier(.2,.8,.2,1)}
 .mason figure:hover img{transform:scale(1.06)}
@@ -284,7 +283,6 @@ h2 em{font-style:italic;color:var(--ring)}
 @media (max-width:880px){.mason{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:620px){
   .mason{grid-template-columns:1fr}
-  .mason figure.wide{grid-column:auto;aspect-ratio:4/3}
 }
 
 /* ---------- figure plate ---------- */
@@ -412,10 +410,9 @@ html,body{overflow-x:hidden;max-width:100%}
 .absl em{font-style:normal;color:var(--ink)}
 
 /* ---------- conference mosaic ---------- */
-.road{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px;
+.road{display:grid;grid-template-columns:repeat(auto-fill,minmax(288px,1fr));gap:13px;
   margin-top:clamp(34px,5vw,52px)}
 .road .shot{aspect-ratio:4/3}
-.road .a,.road .b{grid-column:span 2;aspect-ratio:16/10}
 .shot{position:relative;margin:0;overflow:hidden;border:1px solid var(--line-soft);
   background:var(--deep);border-radius:3px}
 .shot img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;
@@ -477,7 +474,6 @@ html,body{overflow-x:hidden;max-width:100%}
   .split,.two,.tl2,.galhead{grid-template-columns:1fr}
   .split .portrait-fig img{aspect-ratio:3/2;object-position:50% 20%}
   .road{grid-template-columns:repeat(2,1fr)}
-  .road .a,.road .b{grid-column:span 2;aspect-ratio:16/10}
   .ghost{font-size:clamp(90px,26vw,180px);opacity:.75}
   .chapter{padding:clamp(76px,11vh,120px) 0}
 }
@@ -498,8 +494,7 @@ html,body{overflow-x:hidden;max-width:100%}
   .b{padding:13px 18px;font-size:10.5px;flex:1 1 auto;justify-content:center}
   .deck{font-size:16px}
   .road{grid-template-columns:1fr}
-  .road .shot,.road .a,.road .b{grid-column:auto;aspect-ratio:4/3}
-  .mason{columns:1}
+  .road .shot{grid-column:auto}
   .phases{grid-template-columns:1fr}
   .ph{min-height:0}
   .big a{font-size:clamp(21px,6.6vw,30px);word-break:break-word}
